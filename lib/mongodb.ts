@@ -4,7 +4,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 interface MongooseCache {
   conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+  promise: any;
 }
 
 declare global {
