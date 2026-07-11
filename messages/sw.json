@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "home": "Nyumbani",
+    "about": "Kuhusu",
+    "services": "Huduma",
+    "products": "Bidhaa",
+    "staff": "Timu Yetu",
+    "contact": "Mawasiliano",
+    "admin": "Msimamizi",
+    "callUs": "Piga Simu"
+  },
+  "hero": {
+    "title": "Mshirika Wako wa Teknolojia",
+    "subtitle": "Kuwezesha Biashara za Tanzania kwa Mfumo wa IT wa Kisasa",
+    "description": "Tunatoa huduma kamilif za teknolojia ikiwa ni pamoja na uundaji wa tovuti, msaada wa IT, mauzo ya vifaa vya kompyuta, na suluhisho maalum zinazolingana na mahitaji yako.",
+    "cta1": "Anza Sasa",
+    "cta2": "Ona Bidhaa"
+  },
+  "about": {
+    "title": "Kuhusu TanzaNexTech",
+    "subtitle": "Mshirika Wako wa Kuaminika wa Teknolojia",
+    "description": "TanzaNexTech ni kampuni inayoongoza kwenye teknolojia nchini Tanzania, iliyobobea kutoa suluhisho za kisasa zinazochochea ukuaji wa biashara na mabadiliko ya kidijitali.",
+    "mission": "Dhamira Yetu",
+    "missionText": "Kuwezesha biashara na watu binafsi wa Tanzania kwa suluhisho za kisasa za teknolojia zinazochochea ukuaji, ufanisi, na ubunifu.",
+    "vision": "Dhamira Yetu",
+    "visionText": "Kuwa mshirika wa kwanza wa teknolojia nchini Tanzania, utambulishwe kwa ubora wa utoaji huduma na kuridhisha wateja.",
+    "values": "Thamani Zetu",
+    "innovation": "Ubunifu",
+    "innovationText": "Tunakubali teknolojia ya kisasa na suluhisho za ubunifu.",
+    "integrity": "Uadilifu",
+    "integrityText": "Tunafanya biashara kwa usawa na uwazi.",
+    "excellence": "Ubora",
+    "excellenceText": "Tunatoa suluhisho za hali ya juu zinazozidi matarajio.",
+    "customerFocus": "Kuzingatia Mteja",
+    "customerFocusText": "Tunazingatia mahitaji na mafanikio ya wateja wetu."
+  },
+  "services": {
+    "title": "Huduma Zetu",
+    "subtitle": "Suluhisho Kamili za Teknolojia",
+    "description": "Tunatoa aina mbalimbali za huduma za teknolojia zilizoundwa kukidhi mahitaji mbalimbali ya biashara na watu binafsi nchini Tanzania.",
+    "webDev": {
+      "title": "Uundaji wa Tovuti",
+      "description": "Tovuti na programu za tovuti maalum zilizoundwa kwa teknolojia za kisasa"
+    },
+    "itSupport": {
+      "title": "Msaada wa IT",
+      "description": "Msaada wa kitaalamu wa IT na huduma za matengenezo kwa biashara yako"
+    },
+    "hardware": {
+      "title": "Mauzo ya Vifaa",
+      "description": "Kompyuta, laptopi, na vifaa vya IT bora kwa bei za ushindani"
+    },
+    "custom": {
+      "title": "Suluhisho Maalum",
+      "description": "Suluhisho maalum za teknolojia kukidhi mahitaji mahususi ya biashara yako"
+    }
+  },
+  "products": {
+    "title": "Bidhaa Zetu",
+    "subtitle": "Bidhaa Bora za Teknolojia",
+    "description": "Chagua bidhaa zetu bora za teknolojia kwa mahitaji yako ya nyumbani au biashara.",
+    "laptops": "Laptopi",
+    "desktops": "Kompyuta za Meza",
+    "accessories": "Vifaa Visaidizi",
+    "pos": "Mifumo ya POS",
+    "viewDetails": "Ona Maelezo",
+    "addToCart": "Weka kwenye Gari",
+    "outOfStock": "Imekwisha"
+  },
+  "staff": {
+    "title": "Timu Yetu",
+    "subtitle": "Ona Wataalamu Nyuma ya TanzaNexTech",
+    "description": "Timu yetu ya wataalamu imejikita kutoa suluhisho bora za teknolojia na huduma."
+  },
+  "contact": {
+    "title": "Wasiliana na TanzaNexTech",
+    "subtitle": "Pata Mawasiliano",
+    "description": "Uko tayari kubadilisha biashara yako kwa suluhisho za kisasa za teknolojia? Tufikie na tujadili jinsi tunavyoweza kukusaidia kufikia malengo yako.",
+    "sendMessage": "Tutumie Ujumbe",
+    "fullName": "Jina Kamili",
+    "email": "Anwani ya Barua pepe",
+    "phone": "Namba ya Simu",
+    "subject": "Mada",
+    "message": "Ujumbe",
+    "send": "Tuma Ujumbe",
+    "sending": "Inatuma...",
+    "contactInfo": "Maelezo ya Mawasiliano",
+    "quickActions": "Hatua za Haraka",
+    "callUs": "Piga Simu Sasa",
+    "emailUs": "Tutumie Barua pepe",
+    "browseProducts": "Chagua Bidhaa",
+    "phoneLabel": "Simu",
+    "emailLabel": "Barua pepe",
+    "addressLabel": "Anwani",
+    "whatsappLabel": "WhatsApp",
+    "hoursLabel": "Masaa ya Biashara",
+    "hours": "Jumatatu - Ijumaa: 8:00 AM - 6:00 PM",
+    "getInTouch": "Pata Mawasiliano",
+    "thankYouMessage": "Asante kwa ujumbe wako! Tutakupigia karibu.",
+    "selectSubject": "Chagua mada",
+    "generalInquiry": "Uchunguzi wa Jumla",
+    "salesAndProducts": "Mauzo na Bidhaa",
+    "technicalSupport": "Msaada wa Kiufundi",
+    "partnership": "Ushirikiano",
+    "careerOpportunities": "Fursa za Kazi"
+  },
+  "footer": {
+    "company": "Kampuni",
+    "aboutUs": "Kuhusu Sisi",
+    "ourTeam": "Timu Yetu",
+    "careers": "Kazi",
+    "contact": "Mawasiliano",
+    "services": "Huduma",
+    "webDevelopment": "Uundaji wa Tovuti",
+    "itSupport": "Msaada wa IT",
+    "hardwareSales": "Mauzo ya Vifaa",
+    "customSolutions": "Suluhisho Maalum",
+    "products": "Bidhaa",
+    "laptops": "Laptopi",
+    "desktops": "Kompyuta za Meza",
+    "accessories": "Vifaa Visaidizi",
+    "posSystems": "Mifumo ya POS",
+    "tagline": "Mshirika Wako wa Teknolojia",
+    "rights": "Haki zote zimehifadhiwa."
+  },
+  "cart": {
+    "title": "Gari la Ununuzi",
+    "empty": "Gari lako ni tupu",
+    "total": "Jumla",
+    "checkout": "Lipia",
+    "remove": "Ondoa",
+    "quantity": "Idadi"
+  },
+  "common": {
+    "loading": "Inapakia...",
+    "error": "Kosa",
+    "success": "Mafanikio",
+    "close": "Funga",
+    "cancel": "Ghairi",
+    "confirm": "Thibitisha",
+    "save": "Hifadhi",
+    "edit": "Hariri",
+    "delete": "Futa",
+    "search": "Tafuta",
+    "filter": "Chuja",
+    "sort": "Panga",
+    "next": "Ifuatayo",
+    "previous": "Iliyotangulia",
+    "page": "Ukurasa",
+    "of": "ya"
+  }
+}

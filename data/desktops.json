@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "Dell OptiPlex 7090",
+    "desc": "Powerful business desktop for professional work.",
+    "price": "2,200,000",
+    "ram": "16GB",
+    "storage": "512GB SSD",
+    "processor": "Intel Core i7 11th Gen",
+    "graphics": "Intel UHD Graphics",
+    "features": ["Small Form Factor", "Multiple Ports", "Tool-less Access", "Energy Efficient"],
+    "image": "/products/dek1.jpg",
+    "sold": false
+  },
+  {
+    "id": 2,
+    "name": "HP EliteDesk 800 G6",
+    "desc": "Reliable desktop for office and business use.",
+    "price": "1,800,000",
+    "ram": "8GB",
+    "storage": "256GB SSD",
+    "processor": "Intel Core i5 10th Gen",
+    "graphics": "Intel UHD Graphics 630",
+    "features": ["Security Features", "Expandable", "Quiet Operation", "Business Ready"],
+    "image": "/products/dek2.jpg",
+    "sold": false
+  },
+  {
+    "id": 3,
+    "name": "Lenovo ThinkCentre M720q",
+    "desc": "Compact desktop with powerful performance.",
+    "price": "1,500,000",
+    "ram": "8GB",
+    "storage": "256GB SSD",
+    "processor": "Intel Core i3 10th Gen",
+    "graphics": "Intel UHD Graphics 630",
+    "features": ["Tiny Form Factor", "Mountable", "Low Power", "Quiet Cooling"],
+    "image": "/products/dek3.jpg",
+    "sold": false
+  },
+  {
+    "id": 4,
+    "name": "Apple iMac 24\"",
+    "desc": "All-in-one desktop for creative professionals.",
+    "price": "4,500,000",
+    "ram": "16GB",
+    "storage": "512GB SSD",
+    "processor": "Apple M1",
+    "graphics": "8-core GPU",
+    "features": ["4.5K Retina Display", "Built-in Camera", "Thin Design", "macOS"],
+    "image": "/products/dek1.jpg",
+    "sold": false
+  }
+]

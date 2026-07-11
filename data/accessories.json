@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "name": "Wireless Mouse",
+    "desc": "Ergonomic wireless mouse with precision tracking.",
+    "price": "85,000",
+    "category": "Input Devices",
+    "brand": "Logitech",
+    "features": ["Wireless", "Ergonomic Design", "Long Battery Life", "Precision Tracking"],
+    "image": "/products/acc1.jpg",
+    "sold": false
+  },
+  {
+    "id": 2,
+    "name": "Mechanical Keyboard",
+    "desc": "RGB mechanical keyboard for gaming and typing.",
+    "price": "250,000",
+    "category": "Input Devices",
+    "brand": "Corsair",
+    "features": ["RGB Backlight", "Mechanical Switches", "Programmable Keys", "USB-C"],
+    "image": "/products/acc2.jpg",
+    "sold": false
+  },
+  {
+    "id": 3,
+    "name": "USB-C Hub",
+    "desc": "Multi-port USB-C hub with HDMI and SD card reader.",
+    "price": "120,000",
+    "category": "Connectivity",
+    "brand": "Anker",
+    "features": ["7-in-1", "4K HDMI", "SD Card Reader", "100W Power Delivery"],
+    "image": "/products/acc3.jpg",
+    "sold": false
+  },
+  {
+    "id": 4,
+    "name": "Webcam HD",
+    "desc": "1080p HD webcam with noise cancellation.",
+    "price": "180,000",
+    "category": "Video",
+    "brand": "Logitech",
+    "features": ["1080p Resolution", "Auto Focus", "Noise Cancellation", "Wide Angle"],
+    "image": "/products/acc1.jpg",
+    "sold": false
+  }
+]

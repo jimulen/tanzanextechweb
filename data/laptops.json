@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "name": "Dell XPS 15",
+    "desc": "Powerful laptop for developers & designers.",
+    "price": "3,500,000",
+    "ram": "16GB",
+    "storage": "512GB SSD",
+    "generation": "11th Gen Intel",
+    "features": [
+      "Touchscreen",
+      "Backlit Keyboard",
+      "15.6 inch display"
+    ],
+    "image": "/products/lap11.jpg",
+    "sold": false
+  },
+  {
+    "id": 2,
+    "name": "MacBook Pro 16",
+    "desc": "High-end Mac for creatives and professionals.",
+    "price": "7,000,000",
+    "ram": "32GB",
+    "storage": "1TB SSD",
+    "generation": "M1 Pro",
+    "features": [
+      "Retina Display",
+      "Touch Bar",
+      "Backlit Keyboard"
+    ],
+    "image": "/products/lap2.jpg",
+    "sold": false
+  },
+  {
+    "id": 3,
+    "name": "HP EliteBook 840 G6",
+    "desc": "Business laptop with touchscreen display and professional features.",
+    "price": "750,000",
+    "ram": "8GB",
+    "storage": "256GB SSD",
+    "generation": "Core i5 8th Generation",
+    "features": [
+      "Touchscreen",
+      "Business Security",
+      "Lightweight Design"
+    ],
+    "image": "/products/lap5.jpg",
+    "sold": false
+  },
+  {
+    "id": 4,
+    "name": "Asus ZenBook 2",
+    "desc": "High-performance laptop with 16GB RAM and 512GB SSD, featuring Intel Core i7 processor and touchscreen display.",
+    "price": "1,500,000",
+    "ram": "16GB",
+    "storage": "512GB SSD",
+    "generation": "Intel Core i7 11th Generation",
+    "features": [
+      "Touchscreen",
+      "Backlit Keyboard",
+      "Ultra-thin Design",
+      "Fast Charging"
+    ],
+    "image": "/products/product-1777920808934.jpg",
+    "sold": false
+  }
+]

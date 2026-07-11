@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "products": "Products",
+    "staff": "Our Team",
+    "contact": "Contact",
+    "admin": "Admin",
+    "callUs": "Call Us"
+  },
+  "hero": {
+    "title": "Your Technology Partner",
+    "subtitle": "Empowering Tanzanian businesses with cutting-edge IT solutions",
+    "description": "We provide comprehensive technology services including web development, IT support, hardware sales, and custom solutions tailored to your needs.",
+    "cta1": "Get Started",
+    "cta2": "View Products"
+  },
+  "about": {
+    "title": "About TanzaNexTech",
+    "subtitle": "Your Trusted Technology Partner",
+    "description": "TanzaNexTech is a leading technology company in Tanzania, dedicated to providing innovative solutions that drive business growth and digital transformation.",
+    "mission": "Our Mission",
+    "missionText": "To empower Tanzanian businesses and individuals with cutting-edge technology solutions that drive growth, efficiency, and innovation.",
+    "vision": "Our Vision",
+    "visionText": "To be the leading technology partner in Tanzania, recognized for excellence in service delivery and customer satisfaction.",
+    "values": "Our Values",
+    "innovation": "Innovation",
+    "innovationText": "We embrace cutting-edge technology and creative solutions.",
+    "integrity": "Integrity",
+    "integrityText": "We conduct business with honesty and transparency.",
+    "excellence": "Excellence",
+    "excellenceText": "We deliver high-quality solutions that exceed expectations.",
+    "customerFocus": "Customer Focus",
+    "customerFocusText": "We prioritize our customers' needs and success."
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive Technology Solutions",
+    "description": "We offer a wide range of technology services designed to meet the diverse needs of businesses and individuals in Tanzania.",
+    "webDev": {
+      "title": "Web Development",
+      "description": "Custom websites and web applications built with modern technologies"
+    },
+    "itSupport": {
+      "title": "IT Support",
+      "description": "Professional IT support and maintenance services for your business"
+    },
+    "hardware": {
+      "title": "Hardware Sales",
+      "description": "Quality computers, laptops, and IT equipment at competitive prices"
+    },
+    "custom": {
+      "title": "Custom Solutions",
+      "description": "Tailored technology solutions to meet your specific business needs"
+    }
+  },
+  "products": {
+    "title": "Our Products",
+    "subtitle": "Quality Technology Products",
+    "description": "Browse our selection of high-quality technology products for your home or business needs.",
+    "laptops": "Laptops",
+    "desktops": "Desktops",
+    "accessories": "Accessories",
+    "pos": "POS Systems",
+    "viewDetails": "View Details",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock"
+  },
+  "staff": {
+    "title": "Our Team",
+    "subtitle": "Meet the Experts Behind TanzaNexTech",
+    "description": "Our dedicated team of professionals is committed to delivering exceptional technology solutions and services."
+  },
+  "contact": {
+    "title": "Contact TanzaNexTech",
+    "subtitle": "Get In Touch",
+    "description": "Ready to transform your business with cutting-edge technology solutions? Reach out to us and let's discuss how we can help you achieve your goals.",
+    "sendMessage": "Send us a Message",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "contactInfo": "Contact Information",
+    "quickActions": "Quick Actions",
+    "callUs": "Call Us Now",
+    "emailUs": "Email Us",
+    "browseProducts": "Browse Products",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Address",
+    "whatsappLabel": "WhatsApp",
+    "hoursLabel": "Business Hours",
+    "hours": "Mon - Fri: 8:00 AM - 6:00 PM",
+    "getInTouch": "Get In Touch",
+    "thankYouMessage": "Thank you for your message! We will get back to you soon.",
+    "selectSubject": "Select a subject",
+    "generalInquiry": "General Inquiry",
+    "salesAndProducts": "Sales & Products",
+    "technicalSupport": "Technical Support",
+    "partnership": "Partnership",
+    "careerOpportunities": "Career Opportunities"
+  },
+  "footer": {
+    "company": "Company",
+    "aboutUs": "About Us",
+    "ourTeam": "Our Team",
+    "careers": "Careers",
+    "contact": "Contact",
+    "services": "Services",
+    "webDevelopment": "Web Development",
+    "itSupport": "IT Support",
+    "hardwareSales": "Hardware Sales",
+    "customSolutions": "Custom Solutions",
+    "products": "Products",
+    "laptops": "Laptops",
+    "desktops": "Desktops",
+    "accessories": "Accessories",
+    "posSystems": "POS Systems",
+    "tagline": "Your Technology Partner",
+    "rights": "All rights reserved."
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "next": "Next",
+    "previous": "Previous",
+    "page": "Page",
+    "of": "of"
+  }
+}
