@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowLeft, Star, Heart, Share2, Truck, Shield, RefreshCw } from 'lucide-react';
-import desktopsData from "../../../../data/desktops.json";
+import desktopsData from "../../../../../data/desktops.json";
 
 export default function DesktopDetailPage({ params }: { params: { id: string } }) {
   const [selectedImage, setSelectedImage] = useState(0);

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import { ShoppingCart, Filter, Search, Star, Heart, Eye, Package } from 'lucide-react';
-import accessoriesData from "../../../data/accessories.json";
+import accessoriesData from "../../../../data/accessories.json";
 
 interface Accessory {
   id: number;

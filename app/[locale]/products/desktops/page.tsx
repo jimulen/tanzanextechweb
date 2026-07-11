@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import { ShoppingCart, Filter, Search, Star, Heart, Eye, Monitor } from 'lucide-react';
-import desktopsData from "../../../data/desktops.json";
+import desktopsData from "../../../../data/desktops.json";
 
 interface Desktop {
   id: number;

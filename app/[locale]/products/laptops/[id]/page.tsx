@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowLeft, Star, Heart, Share2, Truck, Shield, RefreshCw } from 'lucide-react';
-import laptopsData from "../../../../data/laptops.json";
+import laptopsData from "../../../../../data/laptops.json";
 
 export default function LaptopDetailPage({ params }: { params: { id: string } }) {
   const [selectedImage, setSelectedImage] = useState(0);
