@@ -9,9 +9,15 @@ import Cart from "@/components/Cart";
 
 export default function Home() {
   return (
-   <div style={{padding: '20px', background: 'green', color: 'white'}}>
-      <h1>TEST PAGE - TanzaNexTech</h1>
-      <p>If you can see this, the basic routing is working.</p>
-   </div>
+    <>
+      <Hero />
+      <About />
+      <Services />
+      <Products />
+      <Staff />
+      <Contact />
+      <Footer />
+      <Cart />
+    </>
   );
 }
