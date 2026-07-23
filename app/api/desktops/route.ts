@@ -18,15 +18,21 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const newDesktop = await request.json();
     
-    // Ensure price is a number
-    if (newDesktop.price && typeof newDesktop.price === 'string') {
-      newDesktop.price = parseFloat(newDesktop.price);
-    }
-    
-    const desktop = await Desktop.create({
-      ...newDesktop,
+    // Map form fields to schema fields
+    const desktopData = {
+      name: newDesktop.name,
+      brand: newDesktop.brand || 'Generic',
+      processor: newDesktop.processor || 'Intel Core i5',
+      ram: newDesktop.ram,
+      storage: newDesktop.storage,
+      graphics: newDesktop.graphics || 'Integrated',
+      price: typeof newDesktop.price === 'string' ? parseFloat(newDesktop.price.replace(/,/g, '')) : newDesktop.price,
+      image: newDesktop.image,
+      description: newDesktop.desc || newDesktop.description,
       sold: false
-    });
+    };
+    
+    const desktop = await Desktop.create(desktopData);
     
     return NextResponse.json(desktop, { status: 201 });
   } catch (error: any) {

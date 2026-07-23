@@ -18,15 +18,19 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const newAccessory = await request.json();
     
-    // Ensure price is a number
-    if (newAccessory.price && typeof newAccessory.price === 'string') {
-      newAccessory.price = parseFloat(newAccessory.price);
-    }
-    
-    const accessory = await Accessory.create({
-      ...newAccessory,
+    // Map form fields to schema fields
+    const accessoryData = {
+      name: newAccessory.name,
+      brand: newAccessory.brand || 'Generic',
+      category: newAccessory.category || 'Other',
+      price: typeof newAccessory.price === 'string' ? parseFloat(newAccessory.price.replace(/,/g, '')) : newAccessory.price,
+      image: newAccessory.image,
+      description: newAccessory.desc || newAccessory.description,
+      features: newAccessory.features || [],
       sold: false
-    });
+    };
+    
+    const accessory = await Accessory.create(accessoryData);
     
     return NextResponse.json(accessory, { status: 201 });
   } catch (error: any) {
