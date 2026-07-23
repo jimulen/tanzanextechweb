@@ -18,15 +18,23 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const newDesktop = await request.json();
     
+    // Ensure price is a number
+    if (newDesktop.price && typeof newDesktop.price === 'string') {
+      newDesktop.price = parseFloat(newDesktop.price);
+    }
+    
     const desktop = await Desktop.create({
       ...newDesktop,
       sold: false
     });
     
     return NextResponse.json(desktop, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error adding desktop:', error);
-    return NextResponse.json({ error: 'Failed to add desktop' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to add desktop', 
+      details: error.message 
+    }, { status: 500 });
   }
 }
 

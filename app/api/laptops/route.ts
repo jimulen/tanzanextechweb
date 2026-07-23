@@ -18,15 +18,23 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const newLaptop = await request.json();
     
+    // Ensure price is a number
+    if (newLaptop.price && typeof newLaptop.price === 'string') {
+      newLaptop.price = parseFloat(newLaptop.price);
+    }
+    
     const laptop = await Laptop.create({
       ...newLaptop,
       sold: false
     });
     
     return NextResponse.json(laptop, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error adding laptop:', error);
-    return NextResponse.json({ error: 'Failed to add laptop' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to add laptop', 
+      details: error.message 
+    }, { status: 500 });
   }
 }
 
