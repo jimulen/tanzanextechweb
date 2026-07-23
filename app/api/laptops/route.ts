@@ -18,6 +18,8 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const newLaptop = await request.json();
     
+    console.log('Received laptop data:', newLaptop);
+    
     // Map form fields to schema fields
     const laptopData = {
       name: newLaptop.name,
@@ -33,14 +35,21 @@ export async function POST(request: NextRequest) {
       sold: false
     };
     
+    console.log('Mapped laptop data:', laptopData);
+    
     const laptop = await Laptop.create(laptopData);
     
     return NextResponse.json(laptop, { status: 201 });
   } catch (error: any) {
     console.error('Error adding laptop:', error);
+    console.error('Error details:', error.message);
+    if (error.errors) {
+      console.error('Validation errors:', error.errors);
+    }
     return NextResponse.json({ 
       error: 'Failed to add laptop', 
-      details: error.message 
+      details: error.message,
+      validationErrors: error.errors
     }, { status: 500 });
   }
 }
