@@ -1,47 +1,63 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import { ShoppingCart, Filter, Search, Star, Heart, Eye, Package } from 'lucide-react';
-import accessoriesData from "../../../../data/accessories.json";
 
 interface Accessory {
-  id: number;
+  _id: string;
   name: string;
-  desc: string;
-  price: string;
+  description: string;
+  price: number;
   category: string;
   brand: string;
   features: string[];
   image: string;
+  sold: boolean;
 }
 
 export default function AccessoriesPage() {
+  const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedBrand, setSelectedBrand] = useState('all');
   const [sortBy, setSortBy] = useState('name');
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 500000 });
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 10000000 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAccessories = async () => {
+      try {
+        const response = await fetch('/api/accessories');
+        const data = await response.json();
+        setAccessories(data);
+      } catch (error) {
+        console.error('Error loading accessories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAccessories();
+  }, []);
 
   // Filter and sort accessories
-  const filteredAccessories = accessoriesData
+  const filteredAccessories = accessories
     .filter(accessory => {
       const matchesSearch = accessory.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           accessory.desc.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || accessory.category === selectedCategory;
-      const matchesBrand = selectedBrand === 'all' || accessory.brand.toLowerCase().includes(selectedBrand.toLowerCase());
-      const matchesPrice = parseInt(accessory.price.replace(/,/g, '')) >= priceRange.min && 
-                          parseInt(accessory.price.replace(/,/g, '')) <= priceRange.max;
-      return matchesSearch && matchesCategory && matchesBrand && matchesPrice;
+                           accessory.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || accessory.category.toLowerCase() === selectedCategory.toLowerCase();
+      const matchesPrice = accessory.price >= priceRange.min && accessory.price <= priceRange.max;
+      const matchesSold = !accessory.sold;
+      return matchesSearch && matchesCategory && matchesPrice && matchesSold;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case 'price-low':
-          return parseInt(a.price.replace(/,/g, '')) - parseInt(b.price.replace(/,/g, ''));
+          return a.price - b.price;
         case 'price-high':
-          return parseInt(b.price.replace(/,/g, '')) - parseInt(a.price.replace(/,/g, ''));
+          return b.price - a.price;
         case 'name':
         default:
           return a.name.localeCompare(b.name);
@@ -51,17 +67,25 @@ export default function AccessoriesPage() {
   const addToCart = (accessory: Accessory) => {
     if (typeof window !== 'undefined' && (window as any).addToCart) {
       (window as any).addToCart({
-        id: `accessory-${accessory.id}`,
+        id: ccessory-,
         name: accessory.name,
-        price: parseInt(accessory.price.replace(/,/g, '')),
+        price: accessory.price,
         quantity: 1,
         image: accessory.image
       });
     }
   };
 
-  const categories = ['all', 'Input Devices', 'Connectivity', 'Video'];
-  const brands = ['all', 'Logitech', 'Corsair', 'Anker'];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-600">Loading accessories...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
@@ -71,7 +95,7 @@ export default function AccessoriesPage() {
           <nav className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-green-600 transition">Home</Link>
             <span>/</span>
-            <Link href="#products" className="hover:text-green-600 transition">Products</Link>
+            <Link href="/products" className="hover:text-green-600 transition">Products</Link>
             <span>/</span>
             <span className="text-gray-900 font-medium">Accessories</span>
           </nav>
@@ -92,7 +116,7 @@ export default function AccessoriesPage() {
             Computer <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-800">Accessories</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Essential computer accessories and peripherals to enhance your productivity and computing experience.
+            Essential accessories to enhance your computing experience.
           </p>
         </motion.div>
 
@@ -103,7 +127,7 @@ export default function AccessoriesPage() {
           transition={{ delay: 0.1 }}
           className="bg-white rounded-2xl shadow-lg p-6 mb-8"
         >
-          <div className="grid md:grid-cols-5 gap-4">
+          <div className="grid md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -123,21 +147,11 @@ export default function AccessoriesPage() {
               className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="all">All Categories</option>
-              {categories.filter(cat => cat !== 'all').map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-
-            {/* Brand Filter */}
-            <select
-              value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="all">All Brands</option>
-              {brands.filter(brand => brand !== 'all').map(brand => (
-                <option key={brand} value={brand}>{brand}</option>
-              ))}
+              <option value="keyboard">Keyboards</option>
+              <option value="mouse">Mice</option>
+              <option value="monitor">Monitors</option>
+              <option value="headset">Headsets</option>
+              <option value="storage">Storage</option>
             </select>
 
             {/* Sort */}
@@ -164,7 +178,7 @@ export default function AccessoriesPage() {
                 type="number"
                 placeholder="Max"
                 value={priceRange.max}
-                onChange={(e) => setPriceRange({ ...priceRange, max: parseInt(e.target.value) || 500000 })}
+                onChange={(e) => setPriceRange({ ...priceRange, max: parseInt(e.target.value) || 10000000 })}
                 className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
             </div>
@@ -187,7 +201,7 @@ export default function AccessoriesPage() {
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredAccessories.map((accessory, index) => (
             <motion.div
-              key={accessory.id}
+              key={accessory._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -228,16 +242,13 @@ export default function AccessoriesPage() {
                 </h3>
                 
                 <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {accessory.desc}
+                  {accessory.description}
                 </p>
 
-                {/* Category and Brand */}
-                <div className="flex gap-2 mb-4">
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                    {accessory.category}
-                  </span>
+                {/* Category */}
+                <div className="mb-4">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                    {accessory.brand}
+                    {accessory.category}
                   </span>
                 </div>
 
@@ -264,14 +275,14 @@ export default function AccessoriesPage() {
                       <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <span className="text-xs text-gray-500">(4.6)</span>
+                  <span className="text-xs text-gray-500">(4.7)</span>
                 </div>
 
                 {/* Price and Actions */}
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-2xl font-bold text-green-600">
-                      TSh {accessory.price}
+                      TSh {accessory.price.toLocaleString()}
                     </p>
                     <p className="text-xs text-gray-500">+ VAT</p>
                   </div>

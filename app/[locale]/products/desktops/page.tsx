@@ -1,47 +1,64 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import { ShoppingCart, Filter, Search, Star, Heart, Eye, Monitor } from 'lucide-react';
-import desktopsData from "../../../../data/desktops.json";
 
 interface Desktop {
-  id: number;
+  _id: string;
   name: string;
-  desc: string;
-  price: string;
+  description: string;
+  price: number;
   ram: string;
   storage: string;
   processor: string;
   graphics: string;
-  features: string[];
   image: string;
+  sold: boolean;
 }
 
 export default function DesktopsPage() {
+  const [desktops, setDesktops] = useState<Desktop[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000000 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDesktops = async () => {
+      try {
+        const response = await fetch('/api/desktops');
+        const data = await response.json();
+        setDesktops(data);
+      } catch (error) {
+        console.error('Error loading desktops:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDesktops();
+  }, []);
 
   // Filter and sort desktops
-  const filteredDesktops = desktopsData
+  const filteredDesktops = desktops
     .filter(desktop => {
       const matchesSearch = desktop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           desktop.desc.toLowerCase().includes(searchTerm.toLowerCase());
+                           desktop.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesBrand = selectedBrand === 'all' || desktop.name.toLowerCase().includes(selectedBrand.toLowerCase());
-      const matchesPrice = parseInt(desktop.price.replace(/,/g, '')) >= priceRange.min && 
-                          parseInt(desktop.price.replace(/,/g, '')) <= priceRange.max;
-      return matchesSearch && matchesBrand && matchesPrice;
+      const matchesPrice = desktop.price >= priceRange.min && desktop.price <= priceRange.max;
+      const matchesSold = !desktop.sold;
+      return matchesSearch && matchesBrand && matchesPrice && matchesSold;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case 'price-low':
-          return parseInt(a.price.replace(/,/g, '')) - parseInt(b.price.replace(/,/g, ''));
+          return a.price - b.price;
         case 'price-high':
-          return parseInt(b.price.replace(/,/g, '')) - parseInt(a.price.replace(/,/g, ''));
+          return b.price - a.price;
         case 'name':
         default:
           return a.name.localeCompare(b.name);
@@ -51,14 +68,25 @@ export default function DesktopsPage() {
   const addToCart = (desktop: Desktop) => {
     if (typeof window !== 'undefined' && (window as any).addToCart) {
       (window as any).addToCart({
-        id: `desktop-${desktop.id}`,
+        id: desktop-,
         name: desktop.name,
-        price: parseInt(desktop.price.replace(/,/g, '')),
+        price: desktop.price,
         quantity: 1,
         image: desktop.image
       });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <Monitor className="w-16 h-16 text-gray-400 mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-600">Loading desktops...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
@@ -68,7 +96,7 @@ export default function DesktopsPage() {
           <nav className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-green-600 transition">Home</Link>
             <span>/</span>
-            <Link href="#products" className="hover:text-green-600 transition">Products</Link>
+            <Link href="/products" className="hover:text-green-600 transition">Products</Link>
             <span>/</span>
             <span className="text-gray-900 font-medium">Desktops</span>
           </nav>
@@ -173,7 +201,7 @@ export default function DesktopsPage() {
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredDesktops.map((desktop, index) => (
             <motion.div
-              key={desktop.id}
+              key={desktop._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -214,7 +242,7 @@ export default function DesktopsPage() {
                 </h3>
                 
                 <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {desktop.desc}
+                  {desktop.description}
                 </p>
 
                 {/* Specs */}
@@ -237,22 +265,6 @@ export default function DesktopsPage() {
                   </div>
                 </div>
 
-                {/* Features */}
-                <div className="mb-4">
-                  <div className="flex flex-wrap gap-1">
-                    {desktop.features.slice(0, 2).map((feature, idx) => (
-                      <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                        {feature}
-                      </span>
-                    ))}
-                    {desktop.features.length > 2 && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                        +{desktop.features.length - 2} more
-                      </span>
-                    )}
-                  </div>
-                </div>
-
                 {/* Rating */}
                 <div className="flex items-center gap-1 mb-4">
                   <div className="flex">
@@ -267,7 +279,7 @@ export default function DesktopsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-2xl font-bold text-green-600">
-                      TSh {desktop.price}
+                      TSh {desktop.price.toLocaleString()}
                     </p>
                     <p className="text-xs text-gray-500">+ VAT</p>
                   </div>
