@@ -8,6 +8,7 @@ import { ArrowLeft, Save, X, Image as ImageIcon } from 'lucide-react';
 
 interface LaptopFormData {
   name: string;
+  brand: string;
   desc: string;
   price: string;
   ram: string;
@@ -23,6 +24,7 @@ export default function AddLaptopPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<LaptopFormData>({
     name: '',
+    brand: '',
     desc: '',
     price: '',
     ram: '',
@@ -167,6 +169,29 @@ export default function AddLaptopPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="e.g., Dell XPS 15"
                   />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Brand *
+                  </label>
+                  <select
+                    name="brand"
+                    value={formData.brand || ''}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Select Brand</option>
+                    <option value="Dell">Dell</option>
+                    <option value="HP">HP</option>
+                    <option value="Lenovo">Lenovo</option>
+                    <option value="Apple">Apple</option>
+                    <option value="Asus">Asus</option>
+                    <option value="Acer">Acer</option>
+                    <option value="MSI">MSI</option>
+                    <option value="Toshiba">Toshiba</option>
+                  </select>
                 </div>
                 
                 <div>

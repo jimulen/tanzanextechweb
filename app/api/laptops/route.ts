@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     // Map form fields to schema fields
     const laptopData = {
       name: newLaptop.name,
-      brand: newLaptop.brand || 'Generic',
+      brand: newLaptop.brand,
       processor: newLaptop.generation || newLaptop.processor || 'Intel Core i5',
       ram: newLaptop.ram,
       storage: newLaptop.storage,
