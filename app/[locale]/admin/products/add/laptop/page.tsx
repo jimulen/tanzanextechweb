@@ -102,6 +102,8 @@ export default function AddLaptopPage() {
     setIsSubmitting(true);
 
     try {
+      console.log('Submitting form data:', formData);
+      
       // Create new laptop via API
       const response = await fetch('/api/laptops', {
         method: 'POST',
@@ -111,18 +113,21 @@ export default function AddLaptopPage() {
         body: JSON.stringify(formData),
       });
       
+      const responseData = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Failed to add laptop');
+        console.error('API Error:', responseData);
+        throw new Error(responseData.details || responseData.error || 'Failed to add laptop');
       }
       
-      const newLaptop = await response.json();
+      const newLaptop = responseData;
       console.log('New laptop added:', newLaptop);
       
       alert('Laptop added successfully!');
       router.push('/admin');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding laptop:', error);
-      alert('Error adding laptop. Please try again.');
+      alert(`Error adding laptop: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
