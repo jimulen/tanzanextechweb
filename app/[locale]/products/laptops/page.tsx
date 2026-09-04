@@ -6,14 +6,15 @@ import Link from "next/link";
 import { motion } from 'framer-motion';
 
 interface Laptop {
-  id: number;
+  _id: string;
   name: string;
-  desc: string;
-  price: string;
+  description: string;
+  price: number;
   ram: string;
   storage: string;
-  generation: string;
-  features: string[];
+  processor: string;
+  display: string;
+  graphics: string;
   image: string;
   sold: boolean;
 }
@@ -47,19 +48,18 @@ export default function LaptopsPage() {
   const filteredLaptops = laptops
     .filter((laptop: Laptop) => {
       const matchesSearch = laptop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           laptop.desc.toLowerCase().includes(searchTerm.toLowerCase());
+                           laptop.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesBrand = selectedBrand === 'all' || laptop.name.toLowerCase().includes(selectedBrand.toLowerCase());
-      const matchesPrice = parseInt(laptop.price.replace(/,/g, '')) >= priceRange.min && 
-                          parseInt(laptop.price.replace(/,/g, '')) <= priceRange.max;
+      const matchesPrice = laptop.price >= priceRange.min && laptop.price <= priceRange.max;
       const matchesSoldStatus = !showSoldOnly || laptop.sold;
       return matchesSearch && matchesBrand && matchesPrice && matchesSoldStatus;
     })
     .sort((a: Laptop, b: Laptop) => {
       switch (sortBy) {
         case 'price-low':
-          return parseInt(a.price.replace(/,/g, '')) - parseInt(b.price.replace(/,/g, ''));
+          return a.price - b.price;
         case 'price-high':
-          return parseInt(b.price.replace(/,/g, '')) - parseInt(a.price.replace(/,/g, ''));
+          return b.price - a.price;
         case 'name':
         default:
           return a.name.localeCompare(b.name);
@@ -69,9 +69,9 @@ export default function LaptopsPage() {
   const addToCart = (laptop: Laptop) => {
     if (typeof window !== 'undefined' && (window as any).addToCart) {
       (window as any).addToCart({
-        id: `laptop-${laptop.id}`,
+        id: `laptop-${laptop._id}`,
         name: laptop.name,
-        price: parseInt(laptop.price.replace(/,/g, '')),
+        price: laptop.price,
         quantity: 1,
         image: laptop.image
       });
@@ -209,7 +209,7 @@ export default function LaptopsPage() {
         {/* Products Grid */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredLaptops.map((laptop: Laptop, index: number) => (
-            <Link key={laptop.id} href={`/products/laptops/${laptop.id}`}>
+            <Link key={laptop._id} href={`/products/laptops/${laptop._id}`}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -255,7 +255,7 @@ export default function LaptopsPage() {
                 </h3>
                 
                 <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {laptop.desc}
+                  {laptop.description}
                 </p>
 
                 {/* Specs */}
@@ -270,7 +270,15 @@ export default function LaptopsPage() {
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-gray-500">Processor:</span>
-                    <span className="font-medium">{laptop.generation}</span>
+                    <span className="font-medium">{laptop.processor}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-500">Display:</span>
+                    <span className="font-medium">{laptop.display}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-500">Graphics:</span>
+                    <span className="font-medium">{laptop.graphics}</span>
                   </div>
                 </div>
 
@@ -288,7 +296,7 @@ export default function LaptopsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-2xl font-bold text-green-600">
-                      TSh {laptop.price}
+                      TSh {laptop.price.toLocaleString()}
                     </p>
                     <p className="text-xs text-gray-500">+ VAT</p>
                   </div>
