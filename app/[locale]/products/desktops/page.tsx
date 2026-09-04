@@ -68,7 +68,7 @@ export default function DesktopsPage() {
   const addToCart = (desktop: Desktop) => {
     if (typeof window !== 'undefined' && (window as any).addToCart) {
       (window as any).addToCart({
-        id: desktop-,
+        id: `desktop-${desktop._id}`,
         name: desktop.name,
         price: desktop.price,
         quantity: 1,
