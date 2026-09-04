@@ -67,7 +67,7 @@ export default function AccessoriesPage() {
   const addToCart = (accessory: Accessory) => {
     if (typeof window !== 'undefined' && (window as any).addToCart) {
       (window as any).addToCart({
-        id: ccessory-,
+        id: `accessory-${accessory._id}`,
         name: accessory.name,
         price: accessory.price,
         quantity: 1,
