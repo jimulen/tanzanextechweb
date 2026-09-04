@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
+import { addToCart } from '@/lib/cart';
 
 interface Laptop {
   _id: string;
@@ -66,16 +67,14 @@ export default function LaptopsPage() {
       }
     });
 
-  const addToCart = (laptop: Laptop) => {
-    if (typeof window !== 'undefined' && (window as any).addToCart) {
-      (window as any).addToCart({
-        id: `laptop-${laptop._id}`,
-        name: laptop.name,
-        price: laptop.price,
-        quantity: 1,
-        image: laptop.image
-      });
-    }
+  const handleAddToCart = (laptop: Laptop) => {
+    addToCart({
+      id: `laptop-${laptop._id}`,
+      name: laptop.name,
+      price: laptop.price,
+      quantity: 1,
+      image: laptop.image
+    });
   };
 
   if (loading) {
@@ -304,7 +303,7 @@ export default function LaptopsPage() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => addToCart(laptop)}
+                    onClick={() => handleAddToCart(laptop)}
                     className="bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors"
                   >
                     <span className="text-sm">🛒</span>

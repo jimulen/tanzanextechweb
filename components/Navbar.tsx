@@ -5,11 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ShoppingCart, Phone, Mail } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getCartItemCount } from '@/lib/cart';
+import Link from 'next/link';
 
 export default function Navbar() {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +20,21 @@ export default function Navbar() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      setCartCount(getCartItemCount());
+    };
+
+    updateCartCount();
+    window.addEventListener('cart-updated', updateCartCount);
+    window.addEventListener('storage', updateCartCount);
+
+    return () => {
+      window.removeEventListener('cart-updated', updateCartCount);
+      window.removeEventListener('storage', updateCartCount);
+    };
   }, []);
 
   const navItems = [
@@ -67,7 +85,6 @@ export default function Navbar() {
                 </motion.a>
               ))}
               
-              {/* Language Switcher */}
               <LanguageSwitcher />
               
               {/* Contact Info */}
@@ -87,6 +104,25 @@ export default function Navbar() {
                   <span className="text-sm hidden xl:inline">info@tanzanex.tech</span>
                 </a>
               </div>
+
+              {/* Cart Button */}
+              <Link 
+                href="/cart"
+                className="relative ml-4"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="bg-white text-green-600 p-2 rounded-full"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                </motion.div>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -124,6 +160,20 @@ export default function Navbar() {
                     {item.name}
                   </motion.a>
                 ))}
+
+                <Link
+                  href="/cart"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 text-white font-medium hover:text-green-200 transition-colors py-2"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  Cart
+                  {cartCount > 0 && (
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
                 
                 <div className="pt-4 border-t border-green-600 space-y-3">
                   <a 
@@ -141,6 +191,8 @@ export default function Navbar() {
                     <span className="text-sm">info@tanzanex.tech</span>
                   </a>
                 </div>
+                
+                <LanguageSwitcher />
               </div>
             </motion.div>
           )}
