@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { CreditCard, Lock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Smartphone, Building2, Lock, CheckCircle, AlertCircle, Copy, Check } from 'lucide-react';
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function PaymentPage() {
   const orderId = searchParams.get('orderId');
   
   const [loading, setLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
   const [order, setOrder] = useState<any>(null);
   const [error, setError] = useState('');
 
@@ -41,48 +41,21 @@ export default function PaymentPage() {
     }
   };
 
-  const handlePayment = async () => {
-    setProcessing(true);
-    setError('');
-
-    try {
-      // Create Stripe checkout session
-      const response = await fetch('/api/payment/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          orderId: order._id,
-          amount: order.totalAmount,
-          customerEmail: order.customer.email
-        }),
-      });
-
-      const session = await response.json();
-
-      if (!response.ok) {
-        throw new Error(session.error || 'Failed to create payment session');
-      }
-
-      // Redirect to Stripe checkout
-      window.location.href = session.url;
-    } catch (err: any) {
-      setError(err.message);
-      setProcessing(false);
-    }
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
   };
 
-  const handleBankTransfer = () => {
-    // For bank transfer, mark order as pending and show instructions
-    router.push(`/checkout/confirmation?orderId=${orderId}&method=bank_transfer`);
+  const handleConfirmPayment = (method: string) => {
+    router.push(`/checkout/confirmation?orderId=${orderId}&method=${method}`);
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <CreditCard className="w-16 h-16 text-gray-400 mx-auto mb-4 animate-pulse" />
+          <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4 animate-pulse" />
           <p className="text-gray-600">Loading payment details...</p>
         </div>
       </div>
@@ -115,73 +88,125 @@ export default function PaymentPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Payment Method</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Payment Information</h1>
           <p className="text-gray-600">Order #{order.orderNumber}</p>
+          <p className="text-2xl font-bold text-green-600 mt-2">
+            TSh {order.totalAmount.toLocaleString()}
+          </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {/* Stripe Payment */}
+          {/* M-Pesa Payment */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-2xl shadow-lg p-6 border-2 border-green-500 cursor-pointer hover:border-green-600 transition"
-            onClick={!processing ? handlePayment : undefined}
+            className="bg-white rounded-2xl shadow-lg p-6 border-2 border-green-500"
           >
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-green-600" />
+                <Smartphone className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Card Payment</h3>
-                <p className="text-sm text-gray-500">Pay securely with Stripe</p>
+                <h3 className="font-semibold text-gray-900">M-Pesa</h3>
+                <p className="text-sm text-gray-500">Lipa Na M-Pesa</p>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Instant payment</span>
+
+            <div className="space-y-4 mb-6">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-500 mb-1">Account Name</p>
+                <p className="font-semibold text-gray-900">Tanzanex Technology</p>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Secure encryption</span>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-500 mb-1">Phone Number</p>
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold text-gray-900 text-lg">37221568</p>
+                  <button
+                    onClick={() => copyToClipboard('37221568', 'mpesa')}
+                    className="text-green-600 hover:text-green-700 transition"
+                  >
+                    {copied === 'mpesa' ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Multiple card options</span>
+
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-green-700 font-medium mb-2">How to pay:</p>
+                <ol className="text-sm text-green-600 space-y-1 list-decimal list-inside">
+                  <li>Go to M-Pesa menu on your phone</li>
+                  <li>Select "Lipa Na M-Pesa"</li>
+                  <li>Choose "Pay Bill"</li>
+                  <li>Enter business number: 37221568</li>
+                  <li>Enter account: Your Name</li>
+                  <li>Enter amount: TSh {order.totalAmount.toLocaleString()}</li>
+                  <li>Enter your M-Pesa PIN</li>
+                </ol>
               </div>
             </div>
+
+            <button
+              onClick={() => handleConfirmPayment('mpesa')}
+              className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              I've Paid with M-Pesa
+            </button>
           </motion.div>
 
-          {/* Bank Transfer */}
+          {/* CRDB Bank Transfer */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-2xl shadow-lg p-6 border-2 border-gray-200 cursor-pointer hover:border-green-500 transition"
-            onClick={handleBankTransfer}
+            className="bg-white rounded-2xl shadow-lg p-6 border-2 border-blue-500"
           >
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <Lock className="w-6 h-6 text-blue-600" />
+                <Building2 className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Bank Transfer</h3>
-                <p className="text-sm text-gray-500">Direct bank payment</p>
+                <h3 className="font-semibold text-gray-900">CRDB Bank</h3>
+                <p className="text-sm text-gray-500">Bank Transfer</p>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>No transaction fees</span>
+
+            <div className="space-y-4 mb-6">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-500 mb-1">Account Name</p>
+                <p className="font-semibold text-gray-900">JIMULEN JOHANSEN</p>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Secure transfer</span>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-500 mb-1">Account Number</p>
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold text-gray-900 text-lg">0152456798200</p>
+                  <button
+                    onClick={() => copyToClipboard('0152456798200', 'crdb')}
+                    className="text-blue-600 hover:text-blue-700 transition"
+                  >
+                    {copied === 'crdb' ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Order confirmation on verification</span>
+
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-sm text-blue-700 font-medium mb-2">How to pay:</p>
+                <ol className="text-sm text-blue-600 space-y-1 list-decimal list-inside">
+                  <li>Go to CRDB mobile app or branch</li>
+                  <li>Select "Transfer" or "Pay Bill"</li>
+                  <li>Enter account: 0152456798200</li>
+                  <li>Enter amount: TSh {order.totalAmount.toLocaleString()}</li>
+                  <li>Use reference: Order #{order.orderNumber}</li>
+                  <li>Complete the transfer</li>
+                </ol>
               </div>
             </div>
+
+            <button
+              onClick={() => handleConfirmPayment('crdb')}
+              className="w-full bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              I've Paid via CRDB
+            </button>
           </motion.div>
         </div>
 
@@ -209,14 +234,24 @@ export default function PaymentPage() {
           </div>
         </motion.div>
 
-        {processing && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 text-center">
-              <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600">Processing payment...</p>
+        {/* Important Notice */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4"
+        >
+          <div className="flex items-start gap-3">
+            <Lock className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium text-yellow-800">Important Notice</p>
+              <p className="text-sm text-yellow-700 mt-1">
+                After completing your payment, please click the confirmation button above. 
+                We will verify your payment and process your order. You will receive a confirmation email once your payment is verified.
+              </p>
             </div>
           </div>
-        )}
+        </motion.div>
       </div>
     </div>
   );

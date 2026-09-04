@@ -136,13 +136,28 @@ export default function ConfirmationPage() {
           </div>
 
           {/* Payment Information */}
-          {method === 'bank_transfer' && (
+          {method === 'mpesa' && (
+            <div className="mb-8 p-4 bg-green-50 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-4">M-Pesa Payment Details</h3>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p><strong>Account Name:</strong> Tanzanex Technology</p>
+                <p><strong>Phone Number:</strong> 37221568</p>
+                <p><strong>Amount:</strong> TSh {order?.totalAmount.toLocaleString()}</p>
+                <p><strong>Reference:</strong> Order #{order?.orderNumber}</p>
+                <p className="mt-4 text-xs text-gray-500">
+                  Your M-Pesa payment will be verified and your order will be processed once confirmed.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {method === 'crdb' && (
             <div className="mb-8 p-4 bg-blue-50 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-4">Bank Transfer Instructions</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">CRDB Bank Transfer Details</h3>
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>Bank Name:</strong> CRDB Bank</p>
-                <p><strong>Account Name:</strong> TanzaNex Tech Limited</p>
-                <p><strong>Account Number:</strong> 0151234567890</p>
+                <p><strong>Account Name:</strong> JIMULEN JOHANSEN</p>
+                <p><strong>Account Number:</strong> 0152456798200</p>
                 <p><strong>Amount:</strong> TSh {order?.totalAmount.toLocaleString()}</p>
                 <p><strong>Reference:</strong> Order #{order?.orderNumber}</p>
                 <p className="mt-4 text-xs text-gray-500">
@@ -185,11 +200,13 @@ export default function ConfirmationPage() {
                 <span className="text-green-600 text-sm font-bold">2</span>
               </div>
               <div>
-                <p className="font-medium text-gray-900">Payment Processing</p>
+                <p className="font-medium text-gray-900">Payment Verification</p>
                 <p className="text-sm text-gray-600">
-                  {method === 'bank_transfer' 
-                    ? 'We\'ll confirm your bank transfer and process your order.'
-                    : 'Your payment has been processed successfully.'}
+                  {method === 'mpesa' 
+                    ? 'We\'ll verify your M-Pesa payment and process your order.'
+                    : method === 'crdb'
+                    ? 'We\'ll verify your CRDB bank transfer and process your order.'
+                    : 'Your payment will be verified and processed.'}
                 </p>
               </div>
             </div>

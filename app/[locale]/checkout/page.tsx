@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShoppingBag, CreditCard, MapPin, Phone, Mail, User, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Lock as LockIcon, MapPin, Phone, Mail, User, ArrowRight } from 'lucide-react';
 import { getCart, getCartTotal, clearCart } from '@/lib/cart';
 
 interface CustomerInfo {
@@ -64,7 +64,7 @@ export default function CheckoutPage() {
           customer: customerInfo,
           items: cart,
           totalAmount: total,
-          paymentMethod: 'stripe'
+          paymentMethod: 'mpesa'
         }),
       });
 
@@ -300,11 +300,11 @@ export default function CheckoutPage() {
 
               <div className="mt-6 p-4 bg-green-50 rounded-lg">
                 <div className="flex items-center gap-2 text-green-700">
-                  <CreditCard className="w-5 h-5" />
+                  <LockIcon className="w-5 h-5" />
                   <span className="text-sm font-medium">Secure Payment</span>
                 </div>
                 <p className="text-xs text-green-600 mt-1">
-                  Your payment information is encrypted and secure
+                  Your payment information is secure and will be verified
                 </p>
               </div>
             </div>

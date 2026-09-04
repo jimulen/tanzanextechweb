@@ -65,8 +65,8 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['stripe', 'bank_transfer', 'cash_on_delivery'],
-    default: 'stripe'
+    enum: ['mpesa', 'crdb', 'cash_on_delivery'],
+    default: 'mpesa'
   },
   paymentId: String,
   notes: String,
