@@ -8,14 +8,11 @@ import { ArrowLeft, Save, X, Image as ImageIcon } from 'lucide-react';
 
 interface LaptopFormData {
   name: string;
-  brand: string;
   desc: string;
   price: string;
   ram: string;
   storage: string;
   generation: string;
-  display: string;
-  graphics: string;
   features: string[];
   image: string;
 }
@@ -24,14 +21,11 @@ export default function AddLaptopPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<LaptopFormData>({
     name: '',
-    brand: '',
     desc: '',
     price: '',
     ram: '',
     storage: '',
     generation: '',
-    display: '',
-    graphics: '',
     features: [],
     image: ''
   });
@@ -102,8 +96,6 @@ export default function AddLaptopPage() {
     setIsSubmitting(true);
 
     try {
-      console.log('Submitting form data:', formData);
-      
       // Create new laptop via API
       const response = await fetch('/api/laptops', {
         method: 'POST',
@@ -113,21 +105,18 @@ export default function AddLaptopPage() {
         body: JSON.stringify(formData),
       });
       
-      const responseData = await response.json();
-      
       if (!response.ok) {
-        console.error('API Error:', responseData);
-        throw new Error(responseData.details || responseData.error || 'Failed to add laptop');
+        throw new Error('Failed to add laptop');
       }
       
-      const newLaptop = responseData;
+      const newLaptop = await response.json();
       console.log('New laptop added:', newLaptop);
       
       alert('Laptop added successfully!');
       router.push('/admin');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error adding laptop:', error);
-      alert(`Error adding laptop: ${error.message}`);
+      alert('Error adding laptop. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -174,29 +163,6 @@ export default function AddLaptopPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="e.g., Dell XPS 15"
                   />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Brand *
-                  </label>
-                  <select
-                    name="brand"
-                    value={formData.brand || ''}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Select Brand</option>
-                    <option value="Dell">Dell</option>
-                    <option value="HP">HP</option>
-                    <option value="Lenovo">Lenovo</option>
-                    <option value="Apple">Apple</option>
-                    <option value="Asus">Asus</option>
-                    <option value="Acer">Acer</option>
-                    <option value="MSI">MSI</option>
-                    <option value="Toshiba">Toshiba</option>
-                  </select>
                 </div>
                 
                 <div>
@@ -287,42 +253,6 @@ export default function AddLaptopPage() {
                     placeholder="e.g., Intel Core i7 11th Gen"
                   />
                 </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Display *
-                  </label>
-                  <select
-                    name="display"
-                    value={formData.display || ''}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Select Display</option>
-                    <option value="13.3 inch">13.3 inch</option>
-                    <option value="14 inch">14 inch</option>
-                    <option value="15.6 inch">15.6 inch</option>
-                    <option value="17.3 inch">17.3 inch</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Graphics *
-                  </label>
-                  <select
-                    name="graphics"
-                    value={formData.graphics || ''}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Select Graphics</option>
-                    <option value="Integrated">Integrated</option>
-                    <option value="Dedicated">Dedicated</option>
-                  </select>
-                </div>
               </div>
             </div>
 
@@ -379,21 +309,6 @@ export default function AddLaptopPage() {
                 </div>
               )}
 
-              {/* Manual URL Input */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Or Enter Image URL
-                </label>
-                <input
-                  type="text"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  required={!uploadedImage}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="/products/laptop-image.jpg"
-                />
-              </div>
             </div>
 
             {/* Features */}

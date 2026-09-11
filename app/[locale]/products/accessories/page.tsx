@@ -200,7 +200,7 @@ export default function AccessoriesPage() {
         {/* Products Grid */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredAccessories.map((accessory, index) => (
-            <Link key={accessory._id} href={`/products/accessories/${accessory._id}`}>
+            <Link key={accessory._id} href={`/products/accessories/${accessory._id}`} className="block">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

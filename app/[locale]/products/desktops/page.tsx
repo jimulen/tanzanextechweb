@@ -200,7 +200,7 @@ export default function DesktopsPage() {
         {/* Products Grid */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredDesktops.map((desktop, index) => (
-            <Link key={desktop._id} href={`/products/desktops/${desktop._id}`}>
+            <Link key={desktop._id} href={`/products/desktops/${desktop._id}`} className="block">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
