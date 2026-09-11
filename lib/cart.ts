@@ -1,3 +1,4 @@
+// Helper functions for cart management compatible with localStorage
 export interface CartItem {
   id: string;
   name: string;
@@ -6,66 +7,67 @@ export interface CartItem {
   image: string;
 }
 
-export const addToCart = (item: CartItem) => {
-  if (typeof window === 'undefined') return;
-
-  const cart = getCart();
-  const existingItemIndex = cart.findIndex(i => i.id === item.id);
-
-  if (existingItemIndex > -1) {
-    cart[existingItemIndex].quantity += item.quantity;
-  } else {
-    cart.push(item);
-  }
-
-  localStorage.setItem('cart', JSON.stringify(cart));
-  
-  // Trigger cart update event
-  window.dispatchEvent(new Event('cart-updated'));
-};
-
 export const getCart = (): CartItem[] => {
   if (typeof window === 'undefined') return [];
-  
-  const savedCart = localStorage.getItem('cart');
-  return savedCart ? JSON.parse(savedCart) : [];
+  try {
+    const saved = localStorage.getItem('cart');
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.error('Error reading cart from localStorage:', error);
+    return [];
+  }
 };
 
-export const removeFromCart = (id: string) => {
+export const saveCart = (cart: CartItem[]): void => {
   if (typeof window === 'undefined') return;
-
-  const cart = getCart();
-  const updatedCart = cart.filter(item => item.id !== id);
-  localStorage.setItem('cart', JSON.stringify(updatedCart));
-  
-  window.dispatchEvent(new Event('cart-updated'));
+  try {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  } catch (error) {
+    console.error('Error saving cart to localStorage:', error);
+  }
 };
 
-export const updateCartQuantity = (id: string, quantity: number) => {
-  if (typeof window === 'undefined') return;
-
-  const cart = getCart();
-  const updatedCart = cart.map(item =>
-    item.id === id ? { ...item, quantity } : item
-  );
-  localStorage.setItem('cart', JSON.stringify(updatedCart));
+export const addToCart = (item: CartItem): void => {
+  const currentCart = getCart();
+  const existingIndex = currentCart.findIndex((i) => i.id === item.id);
   
-  window.dispatchEvent(new Event('cart-updated'));
+  if (existingIndex > -1) {
+    currentCart[existingIndex].quantity += item.quantity || 1;
+  } else {
+    currentCart.push({
+      ...item,
+      quantity: item.quantity || 1,
+    });
+  }
+  
+  saveCart(currentCart);
 };
 
-export const clearCart = () => {
+export const removeFromCart = (id: string): void => {
+  const currentCart = getCart();
+  const updatedCart = currentCart.filter((item) => item.id !== id);
+  saveCart(updatedCart);
+};
+
+export const updateCartQuantity = (id: string, quantity: number): void => {
+  const currentCart = getCart();
+  const updatedCart = currentCart
+    .map((item) => (item.id === id ? { ...item, quantity } : item))
+    .filter((item) => item.quantity > 0);
+  saveCart(updatedCart);
+};
+
+export const clearCart = (): void => {
   if (typeof window === 'undefined') return;
-  
   localStorage.removeItem('cart');
-  window.dispatchEvent(new Event('cart-updated'));
 };
 
 export const getCartTotal = (): number => {
-  const cart = getCart();
-  return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const currentCart = getCart();
+  return currentCart.reduce((total, item) => total + item.price * item.quantity, 0);
 };
 
-export const getCartItemCount = (): number => {
-  const cart = getCart();
-  return cart.reduce((sum, item) => sum + item.quantity, 0);
+export const getCartCount = (): number => {
+  const currentCart = getCart();
+  return currentCart.reduce((total, item) => total + item.quantity, 0);
 };

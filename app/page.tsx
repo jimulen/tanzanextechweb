@@ -10,7 +10,7 @@ import Cart from "@/components/Cart";
 
 export default function Home() {
   return (
-   <>
+    <>
       <Navbar />
       <Cart />
       <Hero />
@@ -20,6 +20,6 @@ export default function Home() {
       <Staff />
       <Contact />
       <Footer />
-   </>
+    </>
   );
 }

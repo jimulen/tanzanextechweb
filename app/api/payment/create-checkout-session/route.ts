@@ -3,9 +3,11 @@ import Stripe from 'stripe';
 import connectDB from '@/lib/mongodb';
 import Order from '@/models/Order';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-06-20',
-});
+const getStripe = () => {
+  return new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder_key', {
+    apiVersion: '2024-06-20' as any,
+  });
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,6 +31,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const stripe = getStripe();
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
           product_data: {
             name: item.name,
           },
-          unit_amount: Math.round(item.price * 100), // Stripe expects amount in cents
+          unit_amount: Math.round(item.price * 100),
         },
         quantity: item.quantity,
       })),

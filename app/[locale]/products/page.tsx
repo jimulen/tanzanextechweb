@@ -3,8 +3,11 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Laptop, Monitor, Package, ShoppingCart, ArrowRight } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 
 export default function ProductsPage() {
+  const { addToCart } = useCart();
+
   const productCategories = [
     {
       title: "Laptops",
@@ -37,33 +40,46 @@ export default function ProductsPage() {
 
   const featuredProducts = [
     {
+      id: "featured-dell-xps-15",
       name: "Dell XPS 15",
       category: "Laptops",
-      price: "3,500,000",
+      price: 3500000,
       image: "/products/lap1.jpg",
       badge: "Best Seller"
     },
     {
+      id: "featured-hp-elitedesk-800",
       name: "HP EliteDesk 800 G6",
       category: "Desktops", 
-      price: "1,800,000",
+      price: 1800000,
       image: "/products/dek2.jpg",
       badge: "Popular"
     },
     {
+      id: "featured-wireless-mouse",
       name: "Wireless Mouse",
       category: "Accessories",
-      price: "85,000",
+      price: 85000,
       image: "/products/acc1.jpg",
       badge: "Top Rated"
     }
   ];
 
+  const handleAddToCart = (product: typeof featuredProducts[0]) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.image
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white pt-24 pb-16">
+        <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -118,7 +134,7 @@ export default function ProductsPage() {
                 whileHover={{ y: -5 }}
               >
                 <Link href={category.href}>
-                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer">
+                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer h-full flex flex-col justify-between">
                     {/* Header */}
                     <div className={`bg-gradient-to-r ${category.color} p-8 text-white relative overflow-hidden`}>
                       <div className="relative z-10">
@@ -132,18 +148,20 @@ export default function ProductsPage() {
                     </div>
                     
                     {/* Content */}
-                    <div className="p-6">
-                      <p className="text-gray-600 mb-4">{category.description}</p>
-                      
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {category.features.map((feature, idx) => (
-                          <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                            {feature}
-                          </span>
-                        ))}
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <p className="text-gray-600 mb-4">{category.description}</p>
+                        
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {category.features.map((feature, idx) => (
+                            <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                       
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                         <span className="text-green-600 font-semibold">Browse Products</span>
                         <ArrowRight className="w-5 h-5 text-green-600 group-hover:translate-x-2 transition-transform" />
                       </div>
@@ -168,12 +186,12 @@ export default function ProductsPage() {
           <div className="grid md:grid-cols-3 gap-8">
             {featuredProducts.map((product, index) => (
               <motion.div
-                key={product.name}
+                key={product.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 + index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col justify-between"
               >
                 <div className="relative h-48 bg-gray-50">
                   <img
@@ -188,12 +206,17 @@ export default function ProductsPage() {
                   </div>
                 </div>
                 
-                <div className="p-6">
-                  <div className="text-xs text-gray-500 mb-2">{product.category}</div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h3>
-                  <p className="text-2xl font-bold text-green-600 mb-4">TSh {product.price}</p>
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-2">{product.category}</div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h3>
+                    <p className="text-2xl font-bold text-green-600 mb-4">TSh {product.price.toLocaleString()}</p>
+                  </div>
                   
-                  <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                  <button 
+                    onClick={() => handleAddToCart(product)}
+                    className="w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center gap-2 font-medium"
+                  >
                     <ShoppingCart className="w-5 h-5" />
                     Add to Cart
                   </button>

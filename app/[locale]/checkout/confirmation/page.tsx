@@ -5,13 +5,14 @@ import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, Home, Package, Mail, Phone, MapPin } from 'lucide-react';
-import { clearCart } from '@/lib/cart';
+import { useCart } from '@/contexts/CartContext';
 
 export default function ConfirmationPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
   const method = searchParams.get('method');
+  const { clearCart } = useCart();
   
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<any>(null);
@@ -24,7 +25,7 @@ export default function ConfirmationPage() {
 
     fetchOrder();
     clearCart(); // Clear cart after successful order
-  }, [orderId, router]);
+  }, [orderId, router, clearCart]);
 
   const fetchOrder = async () => {
     try {
@@ -90,21 +91,21 @@ export default function ConfirmationPage() {
                 <Mail className="w-5 h-5 text-gray-400" />
                 <div>
                   <p className="text-sm text-gray-500">Email</p>
-                  <p className="text-gray-900">{order?.customer.email}</p>
+                  <p className="text-gray-900">{order?.customer?.email}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-gray-400" />
                 <div>
                   <p className="text-sm text-gray-500">Phone</p>
-                  <p className="text-gray-900">{order?.customer.phone}</p>
+                  <p className="text-gray-900">{order?.customer?.phone}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 md:col-span-2">
                 <MapPin className="w-5 h-5 text-gray-400" />
                 <div>
                   <p className="text-sm text-gray-500">Delivery Address</p>
-                  <p className="text-gray-900">{order?.customer.address}, {order?.customer.city}</p>
+                  <p className="text-gray-900">{order?.customer?.address}, {order?.customer?.city}</p>
                 </div>
               </div>
             </div>
@@ -114,7 +115,7 @@ export default function ConfirmationPage() {
           <div className="mb-8">
             <h3 className="font-semibold text-gray-900 mb-4">Order Items</h3>
             <div className="space-y-4">
-              {order?.items.map((item: any, index: number) => (
+              {order?.items?.map((item: any, index: number) => (
                 <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-lg">
                   <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0">
                     <img
@@ -142,7 +143,7 @@ export default function ConfirmationPage() {
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>Account Name:</strong> Tanzanex Technology</p>
                 <p><strong>Phone Number:</strong> 37221568</p>
-                <p><strong>Amount:</strong> TSh {order?.totalAmount.toLocaleString()}</p>
+                <p><strong>Amount:</strong> TSh {order?.totalAmount?.toLocaleString()}</p>
                 <p><strong>Reference:</strong> Order #{order?.orderNumber}</p>
                 <p className="mt-4 text-xs text-gray-500">
                   Your M-Pesa payment will be verified and your order will be processed once confirmed.
@@ -158,7 +159,7 @@ export default function ConfirmationPage() {
                 <p><strong>Bank Name:</strong> CRDB Bank</p>
                 <p><strong>Account Name:</strong> JIMULEN JOHANSEN</p>
                 <p><strong>Account Number:</strong> 0152456798200</p>
-                <p><strong>Amount:</strong> TSh {order?.totalAmount.toLocaleString()}</p>
+                <p><strong>Amount:</strong> TSh {order?.totalAmount?.toLocaleString()}</p>
                 <p><strong>Reference:</strong> Order #{order?.orderNumber}</p>
                 <p className="mt-4 text-xs text-gray-500">
                   Please include your order number in the transfer reference. 
@@ -172,61 +173,7 @@ export default function ConfirmationPage() {
           <div className="border-t pt-4">
             <div className="flex justify-between text-lg font-bold text-gray-900">
               <span>Total Paid</span>
-              <span>TSh {order?.totalAmount.toLocaleString()}</span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Next Steps */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-lg p-8 mb-6"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4">What's Next?</h2>
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-green-600 text-sm font-bold">1</span>
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Order Confirmation</p>
-                <p className="text-sm text-gray-600">You'll receive an email confirmation with your order details.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-green-600 text-sm font-bold">2</span>
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Payment Verification</p>
-                <p className="text-sm text-gray-600">
-                  {method === 'mpesa' 
-                    ? 'We\'ll verify your M-Pesa payment and process your order.'
-                    : method === 'crdb'
-                    ? 'We\'ll verify your CRDB bank transfer and process your order.'
-                    : 'Your payment will be verified and processed.'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-green-600 text-sm font-bold">3</span>
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Order Preparation</p>
-                <p className="text-sm text-gray-600">We'll prepare your items for shipment.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-green-600 text-sm font-bold">4</span>
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Delivery</p>
-                <p className="text-sm text-gray-600">Your order will be delivered to your specified address.</p>
-              </div>
+              <span>TSh {order?.totalAmount?.toLocaleString()}</span>
             </div>
           </div>
         </motion.div>
@@ -246,7 +193,7 @@ export default function ConfirmationPage() {
             Back to Home
           </Link>
           <Link
-            href="/products/laptops"
+            href="/products"
             className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <Package className="w-5 h-5" />

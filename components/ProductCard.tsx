@@ -3,12 +3,14 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { ShoppingCart, Star } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 
 interface ProductCardProps {
   product: {
     id: string;
     name: string;
-    desc: string;
+    desc?: string;
+    description?: string;
     price: number;
     image: string;
     rating?: number;
@@ -18,24 +20,26 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const handleAddToCart = () => {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.image
+    };
+
     if (onAddToCart) {
-      onAddToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: 1,
-        image: product.image
-      });
-    } else if (typeof window !== 'undefined' && (window as any).addToCart) {
-      // Fallback to global cart function
-      (window as any).addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: 1,
-        image: product.image
-      });
+      onAddToCart(cartItem);
+    } else {
+      addToCart(cartItem);
     }
   };
 
@@ -44,7 +48,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
-      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
     >
       {/* Image Container */}
       <div className="relative h-64 overflow-hidden bg-gray-100">
@@ -52,7 +56,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           src={product.image}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-300 hover:scale-110"
+          className="object-contain p-4 transition-transform duration-300 hover:scale-110"
         />
         
         {/* Stock Badge */}
@@ -72,17 +76,19 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
       </div>
 
       {/* Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-          {product.name}
-        </h3>
-        
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {product.desc}
-        </p>
+      <div className="p-6 flex-1 flex flex-col justify-between">
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+            {product.name}
+          </h3>
+          
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {product.desc || product.description}
+          </p>
+        </div>
         
         {/* Price and Action */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
           <div>
             <p className="text-2xl font-bold text-green-600">
               TSh {product.price.toLocaleString()}
@@ -94,8 +100,9 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleAddToCart}
-            className="bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors"
+            className="bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2 font-medium"
             disabled={product.inStock === false}
+            title="Add to Cart"
           >
             <ShoppingCart className="w-5 h-5" />
           </motion.button>

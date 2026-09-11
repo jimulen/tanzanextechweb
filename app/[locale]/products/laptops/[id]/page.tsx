@@ -6,8 +6,10 @@ import Link from "next/link";
 import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowLeft, Star, Heart, Share2, Truck, Shield, RefreshCw } from 'lucide-react';
 import laptopsData from "../../../../../data/laptops.json";
+import { useCart } from '@/contexts/CartContext';
 
 export default function LaptopDetailPage({ params }: { params: { id: string } }) {
+  const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   
@@ -18,7 +20,7 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <Link href="/products/laptops" className="text-green-600 hover:text-green-700">
+          <Link href="/products/laptops" className="text-green-600 hover:text-green-700 font-medium">
             ← Back to Laptops
           </Link>
         </div>
@@ -26,29 +28,27 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
     );
   }
 
-  const addToCart = () => {
-    if (typeof window !== 'undefined' && (window as any).addToCart) {
-      (window as any).addToCart({
-        id: `laptop-${laptop.id}`,
-        name: laptop.name,
-        price: parseInt(laptop.price.replace(/,/g, '')),
-        quantity: quantity,
-        image: laptop.image
-      });
-    }
+  const handleAddToCart = () => {
+    addToCart({
+      id: `laptop-${laptop.id}`,
+      name: laptop.name,
+      price: typeof laptop.price === 'number' ? laptop.price : parseInt(String(laptop.price).replace(/,/g, '')),
+      quantity: quantity,
+      image: laptop.image
+    });
   };
 
-  const images = [laptop.image, "/products/lap3.jpg", "/products/lap4.jpg"]; // Sample additional images
+  const images = [laptop.image, "/products/lap3.jpg", "/products/lap4.jpg"];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Breadcrumb */}
-      <div className="bg-white border-b">
+      <div className="bg-white border-b pt-20">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-green-600 transition">Home</Link>
             <span>/</span>
-            <Link href="#products" className="hover:text-green-600 transition">Products</Link>
+            <Link href="/products" className="hover:text-green-600 transition">Products</Link>
             <span>/</span>
             <Link href="/products/laptops" className="hover:text-green-600 transition">Laptops</Link>
             <span>/</span>
@@ -58,7 +58,7 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <Link href="/products/laptops" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 mb-8">
+        <Link href="/products/laptops" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium mb-8">
           <ArrowLeft className="w-4 h-4" />
           Back to Laptops
         </Link>
@@ -70,23 +70,13 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
             animate={{ opacity: 1, x: 0 }}
             className="space-y-4"
           >
-            <div className="relative h-96 bg-gray-50 rounded-2xl overflow-hidden">
+            <div className="relative h-96 bg-gray-50 rounded-2xl overflow-hidden border border-gray-100">
               <Image
                 src={images[selectedImage]}
                 alt={laptop.name}
                 fill
                 className="object-contain p-8"
               />
-              
-              {/* Hover Actions */}
-              <div className="absolute top-4 right-4 flex gap-2">
-                <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition">
-                  <Heart className="w-4 h-4 text-gray-600" />
-                </button>
-                <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition">
-                  <Share2 className="w-4 h-4 text-gray-600" />
-                </button>
-              </div>
             </div>
             
             {/* Thumbnail Gallery */}
@@ -96,7 +86,7 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
                   key={index}
                   onClick={() => setSelectedImage(index)}
                   className={`relative h-20 w-20 bg-gray-50 rounded-lg overflow-hidden border-2 transition ${
-                    selectedImage === index ? 'border-green-600' : 'border-transparent'
+                    selectedImage === index ? 'border-green-600' : 'border-gray-200'
                   }`}
                 >
                   <Image
@@ -153,17 +143,17 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
 
               {/* Quantity and Add to Cart */}
               <div className="flex gap-4 mb-6">
-                <div className="flex items-center border border-gray-300 rounded-lg">
+                <div className="flex items-center border border-gray-300 rounded-xl bg-white">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-4 py-3 hover:bg-gray-50 transition"
+                    className="px-4 py-3 hover:bg-gray-50 transition rounded-l-xl font-bold"
                   >
                     -
                   </button>
-                  <span className="px-4 py-3 font-medium">{quantity}</span>
+                  <span className="px-4 py-3 font-medium min-w-[40px] text-center">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="px-4 py-3 hover:bg-gray-50 transition"
+                    className="px-4 py-3 hover:bg-gray-50 transition rounded-r-xl font-bold"
                   >
                     +
                   </button>
@@ -172,8 +162,8 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={addToCart}
-                  className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-green-600 text-white py-3 px-6 rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center gap-2 font-semibold shadow-lg"
                 >
                   <ShoppingCart className="w-5 h-5" />
                   Add to Cart
@@ -184,15 +174,15 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
               <div className="grid grid-cols-3 gap-4 mb-8">
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
                   <Truck className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                  <p className="text-xs text-gray-600">Free Delivery</p>
+                  <p className="text-xs text-gray-600 font-medium">Free Delivery</p>
                 </div>
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
                   <Shield className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                  <p className="text-xs text-gray-600">2 Year Warranty</p>
+                  <p className="text-xs text-gray-600 font-medium">2 Year Warranty</p>
                 </div>
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
                   <RefreshCw className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                  <p className="text-xs text-gray-600">30 Days Return</p>
+                  <p className="text-xs text-gray-600 font-medium">30 Days Return</p>
                 </div>
               </div>
             </div>
@@ -221,17 +211,19 @@ export default function LaptopDetailPage({ params }: { params: { id: string } })
             </div>
 
             {/* Features */}
-            <div className="border-t pt-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Key Features</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {laptop.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                    <span className="text-sm text-gray-600">{feature}</span>
-                  </div>
-                ))}
+            {laptop.features && laptop.features.length > 0 && (
+              <div className="border-t pt-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Key Features</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {laptop.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                      <span className="text-sm text-gray-600">{feature}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </div>

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
-import { addToCart } from '@/lib/cart';
+import { ShoppingCart } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 
 interface Laptop {
   _id: string;
@@ -21,20 +22,22 @@ interface Laptop {
 }
 
 export default function LaptopsPage() {
+  const { addToCart } = useCart();
   const [laptops, setLaptops] = useState<Laptop[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('all');
   const [sortBy, setSortBy] = useState('name');
+  const [addedToCart, setAddedToCart] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000000 });
   const [showSoldOnly, setShowSoldOnly] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [selectedBrand, setSelectedBrand] = useState('all');
 
   useEffect(() => {
     const loadLaptops = async () => {
       try {
         const response = await fetch('/api/laptops');
         const data = await response.json();
-        setLaptops(data);
+        setLaptops(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error loading laptops:', error);
       } finally {
@@ -48,9 +51,9 @@ export default function LaptopsPage() {
   // Filter and sort laptops
   const filteredLaptops = laptops
     .filter((laptop: Laptop) => {
-      const matchesSearch = laptop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           laptop.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesBrand = selectedBrand === 'all' || laptop.name.toLowerCase().includes(selectedBrand.toLowerCase());
+      const matchesSearch = (laptop.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (laptop.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesBrand = selectedBrand === 'all' || (laptop.name || '').toLowerCase().includes(selectedBrand.toLowerCase());
       const matchesPrice = laptop.price >= priceRange.min && laptop.price <= priceRange.max;
       const matchesSoldStatus = !showSoldOnly || laptop.sold;
       return matchesSearch && matchesBrand && matchesPrice && matchesSoldStatus;
@@ -63,18 +66,22 @@ export default function LaptopsPage() {
           return b.price - a.price;
         case 'name':
         default:
-          return a.name.localeCompare(b.name);
+          return (a.name || '').localeCompare(b.name || '');
       }
     });
 
-  const handleAddToCart = (laptop: Laptop) => {
+  const handleAddToCart = (e: React.MouseEvent, laptop: Laptop) => {
+    e.preventDefault();
+    e.stopPropagation();
     addToCart({
       id: `laptop-${laptop._id}`,
       name: laptop.name,
       price: laptop.price,
       quantity: 1,
       image: laptop.image
-    });
+    }, false); // Don't open cart drawer
+    setAddedToCart(laptop._id);
+    setTimeout(() => setAddedToCart(null), 2000);
   };
 
   if (loading) {
@@ -91,12 +98,12 @@ export default function LaptopsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Breadcrumb */}
-      <div className="bg-white border-b">
+      <div className="bg-white border-b pt-20">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-green-600 transition">Home</Link>
             <span>/</span>
-            <Link href="#products" className="hover:text-green-600 transition">Products</Link>
+            <Link href="/products" className="hover:text-green-600 transition">Products</Link>
             <span>/</span>
             <span className="text-gray-900 font-medium">Laptops</span>
           </nav>
@@ -198,11 +205,6 @@ export default function LaptopsPage() {
           <p className="text-gray-600">
             Showing <span className="font-semibold">{filteredLaptops.length}</span> laptops
           </p>
-          <div className="flex gap-2">
-            <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-              <span className="text-sm">⚙️</span>
-            </button>
-          </div>
         </div>
 
         {/* Products Grid */}
@@ -214,103 +216,92 @@ export default function LaptopsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer"
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer h-full flex flex-col justify-between"
               >
-              {/* Product Image */}
-              <div className="relative h-48 bg-gray-50 overflow-hidden">
-                <Image
-                  src={laptop.image}
-                  alt={laptop.name}
-                  fill
-                  className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                />
-                
-                {/* Hover Actions */}
-                <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition">
-                    <span className="text-sm">❤️</span>
-                  </button>
-                  <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition">
-                    <span className="text-sm">👁️</span>
-                  </button>
-                </div>
+                {/* Product Image */}
+                <div className="relative h-48 bg-gray-50 overflow-hidden">
+                  <Image
+                    src={laptop.image}
+                    alt={laptop.name}
+                    fill
+                    className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                  />
 
-                {/* Badge */}
-                <div className="absolute top-4 left-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    laptop.sold 
-                      ? 'bg-red-600 text-white' 
-                      : 'bg-green-600 text-white'
-                  }`}>
-                    {laptop.sold ? 'Sold' : 'In Stock'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Product Info */}
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                  {laptop.name}
-                </h3>
-                
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {laptop.description}
-                </p>
-
-                {/* Specs */}
-                <div className="space-y-1 mb-4">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">RAM:</span>
-                    <span className="font-medium">{laptop.ram}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">Storage:</span>
-                    <span className="font-medium">{laptop.storage}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">Processor:</span>
-                    <span className="font-medium">{laptop.processor}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">Display:</span>
-                    <span className="font-medium">{laptop.display}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">Graphics:</span>
-                    <span className="font-medium">{laptop.graphics}</span>
+                  {/* Badge */}
+                  <div className="absolute top-4 left-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      laptop.sold 
+                        ? 'bg-red-600 text-white' 
+                        : 'bg-green-600 text-white'
+                    }`}>
+                      {laptop.sold ? 'Sold' : 'In Stock'}
+                    </span>
                   </div>
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">
-                  <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <span key={star} className="text-yellow-400 text-sm">⭐</span>
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-500">(4.8)</span>
-                </div>
-
-                {/* Price and Actions */}
-                <div className="flex items-center justify-between">
+                {/* Product Info */}
+                <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <p className="text-2xl font-bold text-green-600">
-                      TSh {laptop.price.toLocaleString()}
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                      {laptop.name}
+                    </h3>
+                    
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {laptop.description}
                     </p>
-                    <p className="text-xs text-gray-500">+ VAT</p>
+
+                    {/* Specs */}
+                    <div className="space-y-1 mb-4">
+                      {laptop.ram && (
+                        <div className="flex justify-between text-xs">
+                          <span className="text-gray-500">RAM:</span>
+                          <span className="font-medium">{laptop.ram}</span>
+                        </div>
+                      )}
+                      {laptop.storage && (
+                        <div className="flex justify-between text-xs">
+                          <span className="text-gray-500">Storage:</span>
+                          <span className="font-medium">{laptop.storage}</span>
+                        </div>
+                      )}
+                      {laptop.processor && (
+                        <div className="flex justify-between text-xs">
+                          <span className="text-gray-500">Processor:</span>
+                          <span className="font-medium">{laptop.processor}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleAddToCart(laptop)}
-                    className="bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    <span className="text-sm">🛒</span>
-                  </motion.button>
+
+                  {/* Price and Actions */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div>
+                      <p className="text-xl font-bold text-green-600">
+                        TSh {(laptop.price || 0).toLocaleString()}
+                      </p>
+                      <p className="text-xs text-gray-500">+ VAT</p>
+                    </div>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => handleAddToCart(e, laptop)}
+                      className={`${
+                        addedToCart === laptop._id
+                          ? 'bg-green-700'
+                          : 'bg-green-600 hover:bg-green-700'
+                      } text-white p-3 rounded-lg transition-colors flex items-center justify-center`}
+                      title="Add to Cart"
+                    >
+                      {addedToCart === laptop._id ? (
+                        <span className="text-sm font-semibold">✓</span>
+                      ) : (
+                        <ShoppingCart className="w-5 h-5" />
+                      )}
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
             </Link>
           ))}
         </div>

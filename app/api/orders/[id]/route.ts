@@ -4,12 +4,13 @@ import Order from '@/models/Order';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
+    const { id } = await params;
     
-    const order = await Order.findById(params.id);
+    const order = await Order.findById(id);
     
     if (!order) {
       return NextResponse.json(
@@ -30,15 +31,16 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
+    const { id } = await params;
     
     const body = await request.json();
     const { status, paymentId } = body;
     
-    const order = await Order.findById(params.id);
+    const order = await Order.findById(id);
     
     if (!order) {
       return NextResponse.json(
@@ -52,7 +54,7 @@ export async function PUT(
     }
     
     if (paymentId) {
-      order.paymentId = paymentId;
+      (order as any).paymentId = paymentId;
     }
 
     await order.save();

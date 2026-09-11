@@ -5,7 +5,6 @@ import Products from "@/components/Products";
 import Contact from "@/components/Contacts";
 import Footer from "@/components/Footer";
 import Staff from "@/components/Staff";
-import Cart from "@/components/Cart";
 
 export default function Home() {
   return (
@@ -17,7 +16,6 @@ export default function Home() {
       <Staff />
       <Contact />
       <Footer />
-      <Cart />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { CartProvider } from '@/contexts/CartContext';
 
 export default function RootLayout({
   children,
@@ -10,7 +11,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <LanguageProvider>
-          {children}
+          <CartProvider>
+            {children}
+          </CartProvider>
         </LanguageProvider>
       </body>
     </html>

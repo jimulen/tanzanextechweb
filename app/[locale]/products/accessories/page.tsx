@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
-import { ShoppingCart, Filter, Search, Star, Heart, Eye, Package } from 'lucide-react';
+import { ShoppingCart, Search, Star, Package } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 
 interface Accessory {
   _id: string;
@@ -19,19 +20,21 @@ interface Accessory {
 }
 
 export default function AccessoriesPage() {
+  const { addToCart } = useCart();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000000 });
   const [loading, setLoading] = useState(true);
+  const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
   useEffect(() => {
     const loadAccessories = async () => {
       try {
         const response = await fetch('/api/accessories');
         const data = await response.json();
-        setAccessories(data);
+        setAccessories(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error loading accessories:', error);
       } finally {
@@ -45,9 +48,9 @@ export default function AccessoriesPage() {
   // Filter and sort accessories
   const filteredAccessories = accessories
     .filter(accessory => {
-      const matchesSearch = accessory.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           accessory.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || accessory.category.toLowerCase() === selectedCategory.toLowerCase();
+      const matchesSearch = (accessory.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (accessory.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || (accessory.category || '').toLowerCase() === selectedCategory.toLowerCase();
       const matchesPrice = accessory.price >= priceRange.min && accessory.price <= priceRange.max;
       const matchesSold = !accessory.sold;
       return matchesSearch && matchesCategory && matchesPrice && matchesSold;
@@ -60,20 +63,22 @@ export default function AccessoriesPage() {
           return b.price - a.price;
         case 'name':
         default:
-          return a.name.localeCompare(b.name);
+          return (a.name || '').localeCompare(b.name || '');
       }
     });
 
-  const addToCart = (accessory: Accessory) => {
-    if (typeof window !== 'undefined' && (window as any).addToCart) {
-      (window as any).addToCart({
-        id: `accessory-${accessory._id}`,
-        name: accessory.name,
-        price: accessory.price,
-        quantity: 1,
-        image: accessory.image
-      });
-    }
+  const handleAddToCart = (e: React.MouseEvent, accessory: Accessory) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart({
+      id: `accessory-${accessory._id}`,
+      name: accessory.name,
+      price: accessory.price,
+      quantity: 1,
+      image: accessory.image
+    }, false);
+    setAddedToCart(accessory._id);
+    setTimeout(() => setAddedToCart(null), 2000);
   };
 
   if (loading) {
@@ -90,7 +95,7 @@ export default function AccessoriesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Breadcrumb */}
-      <div className="bg-white border-b">
+      <div className="bg-white border-b pt-20">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-green-600 transition">Home</Link>
@@ -190,114 +195,87 @@ export default function AccessoriesPage() {
           <p className="text-gray-600">
             Showing <span className="font-semibold">{filteredAccessories.length}</span> accessories
           </p>
-          <div className="flex gap-2">
-            <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-              <Filter className="w-4 h-4" />
-            </button>
-          </div>
         </div>
 
         {/* Products Grid */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredAccessories.map((accessory, index) => (
-            <motion.div
-              key={accessory._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
-            >
-              {/* Product Image */}
-              <div className="relative h-48 bg-gray-50 overflow-hidden">
-                <Image
-                  src={accessory.image}
-                  alt={accessory.name}
-                  fill
-                  className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                />
-                
-                {/* Hover Actions */}
-                <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition">
-                    <Heart className="w-4 h-4 text-gray-600" />
-                  </button>
-                  <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition">
-                    <Eye className="w-4 h-4 text-gray-600" />
-                  </button>
+            <Link key={accessory._id} href={`/products/accessories/${accessory._id}`}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group h-full flex flex-col justify-between cursor-pointer"
+              >
+                {/* Product Image */}
+                <div className="relative h-48 bg-gray-50 overflow-hidden">
+                  <Image
+                    src={accessory.image}
+                    alt={accessory.name}
+                    fill
+                    className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                  />
+
+                  {/* Badge */}
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      In Stock
+                    </span>
+                  </div>
                 </div>
 
-                {/* Badge */}
-                <div className="absolute top-4 left-4">
-                  <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    In Stock
-                  </span>
-                </div>
-              </div>
+                {/* Product Info */}
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                      {accessory.name}
+                    </h3>
+                    
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {accessory.description}
+                    </p>
 
-              {/* Product Info */}
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                  {accessory.name}
-                </h3>
-                
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {accessory.description}
-                </p>
-
-                {/* Category */}
-                <div className="mb-4">
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                    {accessory.category}
-                  </span>
-                </div>
-
-                {/* Features */}
-                <div className="mb-4">
-                  <div className="flex flex-wrap gap-1">
-                    {accessory.features.slice(0, 2).map((feature, idx) => (
-                      <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                        {feature}
-                      </span>
-                    ))}
-                    {accessory.features.length > 2 && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                        +{accessory.features.length - 2} more
-                      </span>
+                    {/* Category */}
+                    {accessory.category && (
+                      <div className="mb-4">
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                          {accessory.category}
+                        </span>
+                      </div>
                     )}
                   </div>
-                </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">
-                  <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
+                  {/* Price and Actions */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div>
+                      <p className="text-xl font-bold text-green-600">
+                        TSh {(accessory.price || 0).toLocaleString()}
+                      </p>
+                      <p className="text-xs text-gray-500">+ VAT</p>
+                    </div>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => handleAddToCart(e, accessory)}
+                      className={`${
+                        addedToCart === accessory._id
+                          ? 'bg-green-700'
+                          : 'bg-green-600 hover:bg-green-700'
+                      } text-white p-3 rounded-lg transition-colors flex items-center justify-center`}
+                      title="Add to Cart"
+                    >
+                      {addedToCart === accessory._id ? (
+                        <span className="text-sm font-semibold">✓</span>
+                      ) : (
+                        <ShoppingCart className="w-5 h-5" />
+                      )}
+                    </motion.button>
                   </div>
-                  <span className="text-xs text-gray-500">(4.7)</span>
                 </div>
-
-                {/* Price and Actions */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-2xl font-bold text-green-600">
-                      TSh {accessory.price.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-gray-500">+ VAT</p>
-                  </div>
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => addToCart(accessory)}
-                    className="bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
 
