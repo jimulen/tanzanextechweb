@@ -7,6 +7,7 @@ interface IAccessory {
   price: number;
   image: string;
   description: string;
+  features: string[];
   sold: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -37,6 +38,10 @@ const AccessorySchema = new Schema<IAccessory>(
     description: {
       type: String,
       required: true,
+    },
+    features: {
+      type: [String],
+      default: [],
     },
     sold: {
       type: Boolean,

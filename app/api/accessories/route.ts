@@ -17,28 +17,32 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const newAccessory = await request.json();
-    
+    console.log('Received accessory data:', newAccessory);
+
     // Map form fields to schema fields
     const accessoryData = {
       name: newAccessory.name,
-      brand: newAccessory.brand || 'Generic',
-      category: newAccessory.category || 'Other',
+      brand: newAccessory.brand,
+      category: newAccessory.category,
       price: typeof newAccessory.price === 'string' ? parseFloat(newAccessory.price.replace(/,/g, '')) : newAccessory.price,
       image: newAccessory.image,
       description: newAccessory.desc || newAccessory.description,
       features: newAccessory.features || [],
       sold: false
     };
-    
+
     const accessory = await Accessory.create(accessoryData);
-    
+
     return NextResponse.json(accessory, { status: 201 });
   } catch (error: any) {
     console.error('Error adding accessory:', error);
-    return NextResponse.json({ 
-      error: 'Failed to add accessory', 
-      details: error.message 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Failed to add accessory',
+        details: error.message
+      },
+      { status: 500 }
+    );
   }
 }
 
