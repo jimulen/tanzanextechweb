@@ -17,30 +17,34 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const newDesktop = await request.json();
-    
+    console.log('Received desktop data:', newDesktop);
+
     // Map form fields to schema fields
     const desktopData = {
       name: newDesktop.name,
-      brand: newDesktop.brand || 'Generic',
-      processor: newDesktop.processor || 'Intel Core i5',
+      brand: newDesktop.brand,
+      processor: newDesktop.processor,
       ram: newDesktop.ram,
       storage: newDesktop.storage,
-      graphics: newDesktop.graphics || 'Integrated',
+      graphics: newDesktop.graphics,
       price: typeof newDesktop.price === 'string' ? parseFloat(newDesktop.price.replace(/,/g, '')) : newDesktop.price,
       image: newDesktop.image,
       description: newDesktop.desc || newDesktop.description,
       sold: false
     };
-    
+
     const desktop = await Desktop.create(desktopData);
-    
+
     return NextResponse.json(desktop, { status: 201 });
   } catch (error: any) {
     console.error('Error adding desktop:', error);
-    return NextResponse.json({ 
-      error: 'Failed to add desktop', 
-      details: error.message 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Failed to add desktop',
+        details: error.message
+      },
+      { status: 500 }
+    );
   }
 }
 
