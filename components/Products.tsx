@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -63,7 +62,6 @@ export default function Products() {
       desc: 'High-performance laptops for business, development, and gaming',
       icon: <span className="text-3xl">💻</span>,
       products: laptops,
-      href: '/products/laptops',
       color: 'from-blue-500 to-blue-600',
       stats: { count: laptops.length, available: laptops.filter(p => !p.sold).length }
     },
@@ -73,7 +71,6 @@ export default function Products() {
       desc: 'Reliable desktop computers for office and professional use',
       icon: <span className="text-3xl">🖥️</span>,
       products: desktops,
-      href: '/products/desktops',
       color: 'from-green-500 to-green-600',
       stats: { count: desktops.length, available: desktops.filter(p => !p.sold).length }
     },
@@ -83,7 +80,6 @@ export default function Products() {
       desc: 'Keyboards, mice, hubs, and essential computer accessories',
       icon: <span className="text-3xl">🎧</span>,
       products: accessories,
-      href: '/products/accessories',
       color: 'from-purple-500 to-purple-600',
       stats: { count: accessories.length, available: accessories.filter(p => !p.sold).length }
     }
@@ -162,37 +158,35 @@ export default function Products() {
               transition={{ delay: index * 0.1 }}
               className="group"
             >
-              <Link href={category.href} className="block">
-                <div className={`bg-gradient-to-br ${category.color} rounded-2xl p-8 text-white h-full transform transition-all duration-300 hover:scale-105 hover:shadow-2xl`}>
-                  {/* Icon and Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="bg-white bg-opacity-30 rounded-xl p-4 flex items-center justify-center shadow-lg">
-                      {category.icon}
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold">{category.stats.count}</div>
-                      <div className="text-sm opacity-80">Products</div>
-                    </div>
+              <div className={`bg-gradient-to-br ${category.color} rounded-2xl p-8 text-white h-full transform transition-all duration-300 hover:scale-105 hover:shadow-2xl`}>
+                {/* Icon and Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="bg-white bg-opacity-30 rounded-xl p-4 flex items-center justify-center shadow-lg">
+                    {category.icon}
                   </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold">{category.stats.count}</div>
+                    <div className="text-sm opacity-80">Products</div>
+                  </div>
+                </div>
 
-                  {/* Category Info */}
-                  <h3 className="text-2xl font-bold mb-3">{category.name}</h3>
-                  <p className="text-white text-opacity-90 mb-6">{category.desc}</p>
+                {/* Category Info */}
+                <h3 className="text-2xl font-bold mb-3">{category.name}</h3>
+                <p className="text-white text-opacity-90 mb-6">{category.desc}</p>
 
-                  {/* Availability */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">
-                      {category.stats.available} available
-                    </span>
-                    <div className="flex items-center gap-2 bg-white bg-opacity-20 px-3 py-1 rounded-full">
-                      <span className="text-sm font-medium">Browse</span>
-                      <div className="w-4 h-4 bg-white bg-opacity-50 rounded-full flex items-center justify-center">
-                        <span className="text-xs">→</span>
-                      </div>
+                {/* Availability */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">
+                    {category.stats.available} available
+                  </span>
+                  <div className="flex items-center gap-2 bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                    <span className="text-sm font-medium">Browse</span>
+                    <div className="w-4 h-4 bg-white bg-opacity-50 rounded-full flex items-center justify-center">
+                      <span className="text-xs">→</span>
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -203,12 +197,9 @@ export default function Products() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center justify-between mb-8"
+            className="mb-8"
           >
             <h3 className="text-2xl font-bold text-gray-900">Featured Products</h3>
-            <Link href="/products" className="text-green-600 hover:text-green-700 font-medium flex items-center gap-2">
-              View All <span>→</span>
-            </Link>
           </motion.div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -220,58 +211,56 @@ export default function Products() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
               >
-                <Link href={`/products/laptops/${laptop.id}`}>
-                  <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                    {/* Product Image */}
-                    <div className="relative h-48 bg-gray-50">
-                      <Image
-                        src={laptop.image}
-                        alt={laptop.name}
-                        fill
-                        className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                      />
-                      
-                      {/* Status Badge */}
-                      <div className="absolute top-4 left-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          laptop.sold 
-                            ? 'bg-red-600 text-white' 
-                            : 'bg-green-600 text-white'
-                        }`}>
-                          {laptop.sold ? 'Sold' : 'In Stock'}
-                        </span>
-                      </div>
+                <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                  {/* Product Image */}
+                  <div className="relative h-48 bg-gray-50">
+                    <Image
+                      src={laptop.image}
+                      alt={laptop.name}
+                      fill
+                      className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                    />
 
-                      {/* Quick Actions */}
-                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50">
-                          <span className="text-sm">👁️</span>
-                        </button>
-                      </div>
+                    {/* Status Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        laptop.sold
+                          ? 'bg-red-600 text-white'
+                          : 'bg-green-600 text-white'
+                      }`}>
+                        {laptop.sold ? 'Sold' : 'In Stock'}
+                      </span>
                     </div>
 
-                    {/* Product Info */}
-                    <div className="p-4">
-                      <h4 className="font-bold text-gray-900 mb-2 line-clamp-1">{laptop.name}</h4>
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{laptop.desc}</p>
-                      
-                      {/* Specs */}
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{laptop.ram}</span>
-                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{laptop.storage}</span>
-                      </div>
+                    {/* Quick Actions */}
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50">
+                        <span className="text-sm">👁️</span>
+                      </button>
+                    </div>
+                  </div>
 
-                      {/* Price */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-green-600">TSh {laptop.price}</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-yellow-400">⭐</span>
-                          <span className="text-sm text-gray-600">4.8</span>
-                        </div>
+                  {/* Product Info */}
+                  <div className="p-4">
+                    <h4 className="font-bold text-gray-900 mb-2 line-clamp-1">{laptop.name}</h4>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{laptop.desc}</p>
+
+                    {/* Specs */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{laptop.ram}</span>
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{laptop.storage}</span>
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-green-600">TSh {laptop.price}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-yellow-400">⭐</span>
+                        <span className="text-sm text-gray-600">4.8</span>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             ))}
 
@@ -282,58 +271,56 @@ export default function Products() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 + index * 0.1 }}
               >
-                <Link href={`/products/desktops/${desktop.id}`}>
-                  <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                    {/* Product Image */}
-                    <div className="relative h-48 bg-gray-50">
-                      <Image
-                        src={desktop.image}
-                        alt={desktop.name}
-                        fill
-                        className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                      />
-                      
-                      {/* Status Badge */}
-                      <div className="absolute top-4 left-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          desktop.sold 
-                            ? 'bg-red-600 text-white' 
-                            : 'bg-green-600 text-white'
-                        }`}>
-                          {desktop.sold ? 'Sold' : 'In Stock'}
-                        </span>
-                      </div>
+                <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                  {/* Product Image */}
+                  <div className="relative h-48 bg-gray-50">
+                    <Image
+                      src={desktop.image}
+                      alt={desktop.name}
+                      fill
+                      className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                    />
 
-                      {/* Quick Actions */}
-                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50">
-                          <span className="text-sm">👁️</span>
-                        </button>
-                      </div>
+                    {/* Status Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        desktop.sold
+                          ? 'bg-red-600 text-white'
+                          : 'bg-green-600 text-white'
+                      }`}>
+                        {desktop.sold ? 'Sold' : 'In Stock'}
+                      </span>
                     </div>
 
-                    {/* Product Info */}
-                    <div className="p-4">
-                      <h4 className="font-bold text-gray-900 mb-2 line-clamp-1">{desktop.name}</h4>
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{desktop.desc}</p>
-                      
-                      {/* Specs */}
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{desktop.ram}</span>
-                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{desktop.storage}</span>
-                      </div>
+                    {/* Quick Actions */}
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50">
+                        <span className="text-sm">👁️</span>
+                      </button>
+                    </div>
+                  </div>
 
-                      {/* Price */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-green-600">TSh {desktop.price}</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-yellow-400">⭐</span>
-                          <span className="text-sm text-gray-600">4.6</span>
-                        </div>
+                  {/* Product Info */}
+                  <div className="p-4">
+                    <h4 className="font-bold text-gray-900 mb-2 line-clamp-1">{desktop.name}</h4>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{desktop.desc}</p>
+
+                    {/* Specs */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{desktop.ram}</span>
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{desktop.storage}</span>
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-green-600">TSh {desktop.price}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-yellow-400">⭐</span>
+                        <span className="text-sm text-gray-600">4.6</span>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             ))}
 
@@ -344,58 +331,56 @@ export default function Products() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
               >
-                <Link href={`/products/accessories/${accessory.id}`}>
-                  <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                    {/* Product Image */}
-                    <div className="relative h-48 bg-gray-50">
-                      <Image
-                        src={accessory.image}
-                        alt={accessory.name}
-                        fill
-                        className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                      />
-                      
-                      {/* Status Badge */}
-                      <div className="absolute top-4 left-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          accessory.sold 
-                            ? 'bg-red-600 text-white' 
-                            : 'bg-green-600 text-white'
-                        }`}>
-                          {accessory.sold ? 'Sold' : 'In Stock'}
-                        </span>
-                      </div>
+                <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                  {/* Product Image */}
+                  <div className="relative h-48 bg-gray-50">
+                    <Image
+                      src={accessory.image}
+                      alt={accessory.name}
+                      fill
+                      className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                    />
 
-                      {/* Quick Actions */}
-                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50">
-                          <span className="text-sm">👁️</span>
-                        </button>
-                      </div>
+                    {/* Status Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        accessory.sold
+                          ? 'bg-red-600 text-white'
+                          : 'bg-green-600 text-white'
+                      }`}>
+                        {accessory.sold ? 'Sold' : 'In Stock'}
+                      </span>
                     </div>
 
-                    {/* Product Info */}
-                    <div className="p-4">
-                      <h4 className="font-bold text-gray-900 mb-2 line-clamp-1">{accessory.name}</h4>
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{accessory.desc}</p>
-                      
-                      {/* Category */}
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{accessory.category}</span>
-                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{accessory.brand}</span>
-                      </div>
+                    {/* Quick Actions */}
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50">
+                        <span className="text-sm">👁️</span>
+                      </button>
+                    </div>
+                  </div>
 
-                      {/* Price */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-green-600">TSh {accessory.price}</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-yellow-400">⭐</span>
-                          <span className="text-sm text-gray-600">4.7</span>
-                        </div>
+                  {/* Product Info */}
+                  <div className="p-4">
+                    <h4 className="font-bold text-gray-900 mb-2 line-clamp-1">{accessory.name}</h4>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{accessory.desc}</p>
+
+                    {/* Category */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{accessory.category}</span>
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{accessory.brand}</span>
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-green-600">TSh {accessory.price}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-yellow-400">⭐</span>
+                        <span className="text-sm text-gray-600">4.7</span>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -412,15 +397,15 @@ export default function Products() {
             Can't find what you're looking for?
           </h3>
           <p className="text-green-100 mb-8 max-w-2xl mx-auto">
-            We source and supply custom IT solutions based on your specific requirements. 
+            We source and supply custom IT solutions based on your specific requirements.
             Contact our team for personalized assistance.
           </p>
-          <Link
+          <a
             href="#contact"
             className="inline-block bg-white text-green-600 font-semibold px-8 py-4 rounded-xl hover:bg-green-50 transition"
           >
             Get Custom Quote
-          </Link>
+          </a>
         </motion.div>
       </div>
     </section>

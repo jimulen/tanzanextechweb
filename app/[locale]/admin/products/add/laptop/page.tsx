@@ -213,6 +213,9 @@ export default function AddLaptopPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   >
                     <option value="">Select RAM</option>
+                    <option value="2GB">2GB</option>
+                    <option value="4GB">4GB</option>
+                    <option value="6GB">6GB</option>
                     <option value="8GB">8GB</option>
                     <option value="16GB">16GB</option>
                     <option value="32GB">32GB</option>
